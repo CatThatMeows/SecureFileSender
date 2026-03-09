@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FileSenderWinApp.Forms.Client;
+using FileSenderWinApp.Forms.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +10,10 @@ namespace FileSenderWinApp.Forms
 {
     internal class FormHandler
     {
-        public static FormHandler _FH { get; private set; } = new FormHandler();
         private static Main Main { get; set; }
         public static Form ServerFileList { get; private set; } = new ServerFileList();
         public static Form ServerSettings { get; private set; } = new ServerSettings();
+        public static Form ClientServerList { get; private set; } = new ClientServerList();
         public static void Init(Main _main)
         {
             Main = _main;

@@ -1,4 +1,4 @@
-﻿namespace FileSenderWinApp.Forms
+﻿namespace FileSenderWinApp.Forms.Server
 {
     partial class ServerFileList
     {

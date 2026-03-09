@@ -1,5 +1,6 @@
 ﻿using FileSender.Core;
 using FileSender.Core.UI;
+using FileSenderWinApp.Forms.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,7 +38,7 @@ namespace FileSenderWinApp.Forms
             {
                 ((ServerSettings)FormHandler.ServerSettings).SetPort(CoreSettings.CS.Port.ToString());
             }
-            if(FileData.ServerFiles.Count > 0)
+            if (FileData.ServerFiles.Count > 0)
             {
                 ((ServerFileList)FormHandler.ServerFileList).AddFromList();
             }
@@ -47,7 +48,7 @@ namespace FileSenderWinApp.Forms
         {
             if (CoreSettings.CS.ServerCertificate != null)
             {
-                if(FileSender.Core.Server.Listener.Server.IsAwaitingReset)
+                if (FileSender.Core.Server.Listener.Server.IsAwaitingReset)
                     await FileSender.Core.Server.Listener.Server.StartServer(CoreSettings.CS.Port);
                 else
                     MessageBox.Show("Server is already running");
@@ -60,10 +61,15 @@ namespace FileSenderWinApp.Forms
 
         private async void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!FileSender.Core.Server.Listener.Server.IsAwaitingReset)
+            if (!FileSender.Core.Server.Listener.Server.IsAwaitingReset)
                 await FileSender.Core.Server.Listener.Server.Stop();
             else
                 MessageBox.Show("Server isn't running");
+        }
+
+        private void serverlistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormHandler.LoadForm(FormHandler.ClientServerList);
         }
     }
 }

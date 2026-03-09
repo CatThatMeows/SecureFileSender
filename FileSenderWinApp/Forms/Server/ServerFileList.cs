@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FileSenderWinApp.Forms
+namespace FileSenderWinApp.Forms.Server
 {
     public partial class ServerFileList : Form
     {

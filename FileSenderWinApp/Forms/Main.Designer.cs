@@ -34,6 +34,8 @@
             settingsToolStripMenuItem = new ToolStripMenuItem();
             startToolStripMenuItem = new ToolStripMenuItem();
             stopToolStripMenuItem = new ToolStripMenuItem();
+            clientToolStripMenuItem = new ToolStripMenuItem();
+            serverlistToolStripMenuItem = new ToolStripMenuItem();
             mainPanel = new Panel();
             menuStrip.SuspendLayout();
             SuspendLayout();
@@ -41,7 +43,7 @@
             // menuStrip
             // 
             menuStrip.BackColor = SystemColors.ControlDarkDark;
-            menuStrip.Items.AddRange(new ToolStripItem[] { serverToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { serverToolStripMenuItem, clientToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(800, 24);
@@ -58,30 +60,44 @@
             // filesToolStripMenuItem
             // 
             filesToolStripMenuItem.Name = "filesToolStripMenuItem";
-            filesToolStripMenuItem.Size = new Size(180, 22);
+            filesToolStripMenuItem.Size = new Size(116, 22);
             filesToolStripMenuItem.Text = "Files";
             filesToolStripMenuItem.Click += filesToolStripMenuItem_Click;
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(180, 22);
+            settingsToolStripMenuItem.Size = new Size(116, 22);
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
             // startToolStripMenuItem
             // 
             startToolStripMenuItem.Name = "startToolStripMenuItem";
-            startToolStripMenuItem.Size = new Size(180, 22);
+            startToolStripMenuItem.Size = new Size(116, 22);
             startToolStripMenuItem.Text = "Start";
             startToolStripMenuItem.Click += startToolStripMenuItem_Click;
             // 
             // stopToolStripMenuItem
             // 
             stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            stopToolStripMenuItem.Size = new Size(180, 22);
+            stopToolStripMenuItem.Size = new Size(116, 22);
             stopToolStripMenuItem.Text = "Stop";
             stopToolStripMenuItem.Click += stopToolStripMenuItem_Click;
+            // 
+            // clientToolStripMenuItem
+            // 
+            clientToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { serverlistToolStripMenuItem });
+            clientToolStripMenuItem.Name = "clientToolStripMenuItem";
+            clientToolStripMenuItem.Size = new Size(50, 20);
+            clientToolStripMenuItem.Text = "Client";
+            // 
+            // serverlistToolStripMenuItem
+            // 
+            serverlistToolStripMenuItem.Name = "serverlistToolStripMenuItem";
+            serverlistToolStripMenuItem.Size = new Size(121, 22);
+            serverlistToolStripMenuItem.Text = "Serverlist";
+            serverlistToolStripMenuItem.Click += serverlistToolStripMenuItem_Click;
             // 
             // mainPanel
             // 
@@ -117,5 +133,7 @@
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem startToolStripMenuItem;
         private ToolStripMenuItem stopToolStripMenuItem;
+        private ToolStripMenuItem clientToolStripMenuItem;
+        private ToolStripMenuItem serverlistToolStripMenuItem;
     }
 }

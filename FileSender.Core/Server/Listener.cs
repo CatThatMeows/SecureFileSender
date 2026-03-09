@@ -48,7 +48,8 @@ namespace FileSender.Core.Server
                 {
                     Socket clientSocket = await ServerSocket.AcceptAsync(ct);
 
-                    _ = new ClientNode(clientSocket);
+                    ClientNode node = new ClientNode();
+                    await node.CreateNode(clientSocket, ct);
                 }
                 catch (OperationCanceledException)
                 {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
-namespace FileSenderWinApp.Forms
+namespace FileSenderWinApp.Forms.Server
 {
     public partial class ServerSettings : Form
     {
