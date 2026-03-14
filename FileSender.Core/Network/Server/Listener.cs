@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FileSender.Core.Packets;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileSender.Core.Server
+namespace FileSender.Core.Network.Server
 {
     public class Listener
     {
@@ -18,7 +20,7 @@ namespace FileSender.Core.Server
         public bool IsAwaitingReset { get; private set; } = true;
 
 
-        public async Task StartServer(int port)
+        public async Task StartServer(int port, PacketHandler packetHandler)
         {
             if (IsAwaitingReset)
             {
@@ -30,7 +32,7 @@ namespace FileSender.Core.Server
 
             IsAwaitingReset = false;
 
-            await Listen(ServerCTS.Token);
+            await Listen(ServerCTS.Token, packetHandler);
         }
 
         public async Task Stop()
@@ -40,7 +42,7 @@ namespace FileSender.Core.Server
             IsAwaitingReset = true;
         }
 
-        private async Task Listen(CancellationToken ct)
+        private async Task Listen(CancellationToken ct, PacketHandler packetHandler)
         {
             while (!ct.IsCancellationRequested)
             {
@@ -49,7 +51,9 @@ namespace FileSender.Core.Server
                     Socket clientSocket = await ServerSocket.AcceptAsync(ct);
 
                     ClientNode node = new ClientNode();
-                    await node.CreateNode(clientSocket, ct);
+                    await node.CreateNode(clientSocket, packetHandler, ct);
+
+                     _ = node.HandleClient();                    
                 }
                 catch (OperationCanceledException)
                 {

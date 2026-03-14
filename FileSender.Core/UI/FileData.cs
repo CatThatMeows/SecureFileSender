@@ -18,16 +18,20 @@ namespace FileSender.Core.UI
         {
             if (File.Exists("ServerFiles.json"))
             {
-                ServerFiles = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
+                List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
+                if(loadedFile != null)
+                    ServerFiles = loadedFile;
             }
             if (File.Exists("ClientFiles.json"))
             {
-                ClientFiles = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
+                List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
+                if(loadedFile != null)
+                    ClientFiles = loadedFile;
             }
         }
 
-        public string FileName { get; set; } //Full name including extension
-        public string FileLocation { get; set; } //File full location
+        public string FileName { get; set; } = string.Empty; //Full name including extension
+        public string FileLocation { get; set; } = string.Empty; //File full location
         public long FileSize { get; set; }
     }
 }

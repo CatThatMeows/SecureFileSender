@@ -1,0 +1,75 @@
+﻿using FileSender.Core.Network;
+using FileSender.Core.Packets;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Security;
+using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FileSender.Core.Client
+{
+    public class Connection : NetworkCore
+    {
+        public string RemoteIP { get; private set; }
+        CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
+
+        public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
+        {
+            this.CT = ClientCTS.Token;
+            ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            RemoteIP = ip;
+            IsServer = false;
+            this.PacketHandler = packetHandler;
+            try
+            {
+                await ClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port), ClientCTS.Token);
+            }
+            catch (Exception ex) { return false; }
+            if (ClientSocket.Connected)
+            {
+                SSLStream = new SslStream(new NetworkStream(ClientSocket, true), false,
+                            userCertificateValidationCallback: (sender, certificate, chain, errors) =>
+                            {
+                                return true;
+                            });
+                try
+                {
+                    await SSLStream.AuthenticateAsClientAsync(ClientSocket.RemoteEndPoint.ToString().Split(':')[0], null, SslProtocols.Tls12, false);
+                }
+                catch (Exception ex) { Debug.WriteLine(ex); return false; }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public async Task<bool> Send(Packet packet)
+        {
+            //TEST
+            try
+            {
+                byte[] packetBytes = packet.Serialize();
+                byte[] packetType = new byte[1];
+                packetType[0] = (byte)packet.PacketType;
+                Debug.WriteLine("packet size: " + packet.Size);
+                await SSLStream.WriteAsync(BitConverter.GetBytes(packet.Size), ClientCTS.Token);
+                await SSLStream.WriteAsync(packetType, ClientCTS.Token);
+                await SSLStream.WriteAsync(packetBytes, ClientCTS.Token);
+            }
+            catch (Exception ex) {
+                //Disconnect
+
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

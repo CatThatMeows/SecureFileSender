@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -10,25 +11,31 @@ namespace FileSender.Core.Packets
 {
     public class Packet
     {
-        public string Value { get; set; }
-        public string PacketType { get; set; }
         [JsonIgnore]
-        public int Size { get; set; }
-
+        public PacketType PacketType { get; set; }
+        [JsonIgnore]
+        public long Size { get; set; }
         public byte[] Serialize()
         {
-            string serObj = JsonConvert.SerializeObject(this);
-            Size = UTF8Encoding.UTF8.GetByteCount(serObj);
-            return UTF8Encoding.UTF8.GetBytes(serObj);
-        }       
+            string packetString = JsonConvert.SerializeObject(this);
+            this.Size = UTF8Encoding.UTF8.GetByteCount(packetString);
+            return UTF8Encoding.UTF8.GetBytes(packetString);
+        }
+
         public static Packet DeSerialize(byte[] input)
         {
             string PacketString = UTF8Encoding.UTF8.GetString(input);
-            return JsonConvert.DeserializeObject<Packet>(PacketString);
+            Packet packet = JsonConvert.DeserializeObject<Packet>(PacketString);
+            if (packet == null)
+                packet = new Packet() { PacketType = PacketType.InvalidPacket };
+            return packet;
         }
-        public T GetValue<T>()
-        {
-            return JsonConvert.DeserializeObject<T>(Value);
-        }
+    }
+    public enum PacketType : byte
+    {
+        AuthPacket = 0,
+        FileListPacket = 64,
+        FileListPacketRequest = 65,
+        InvalidPacket = 255
     }
 }

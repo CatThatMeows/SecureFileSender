@@ -28,16 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             ClientServerListLV = new ListView();
             IPColumnHeader = new ColumnHeader();
+            ServerListContextMenu = new ContextMenuStrip(components);
+            openFileListToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1 = new MenuStrip();
             directConnectToolStripMenuItem = new ToolStripMenuItem();
+            ServerListContextMenu.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // ClientServerListLV
             // 
             ClientServerListLV.Columns.AddRange(new ColumnHeader[] { IPColumnHeader });
+            ClientServerListLV.ContextMenuStrip = ServerListContextMenu;
             ClientServerListLV.Dock = DockStyle.Fill;
             ClientServerListLV.Location = new Point(0, 24);
             ClientServerListLV.Name = "ClientServerListLV";
@@ -49,6 +54,19 @@
             // IPColumnHeader
             // 
             IPColumnHeader.Text = "IP";
+            // 
+            // ServerListContextMenu
+            // 
+            ServerListContextMenu.Items.AddRange(new ToolStripItem[] { openFileListToolStripMenuItem });
+            ServerListContextMenu.Name = "ServerListContextMenu";
+            ServerListContextMenu.Size = new Size(181, 48);
+            // 
+            // openFileListToolStripMenuItem
+            // 
+            openFileListToolStripMenuItem.Name = "openFileListToolStripMenuItem";
+            openFileListToolStripMenuItem.Size = new Size(180, 22);
+            openFileListToolStripMenuItem.Text = "Open file list";
+            openFileListToolStripMenuItem.Click += openFileListToolStripMenuItem_Click;
             // 
             // menuStrip1
             // 
@@ -76,6 +94,7 @@
             MainMenuStrip = menuStrip1;
             Name = "ClientServerList";
             Text = "ClientServerList";
+            ServerListContextMenu.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -87,5 +106,7 @@
         private ToolStripMenuItem directConnectToolStripMenuItem;
         private ColumnHeader IPColumnHeader;
         public ListView ClientServerListLV;
+        private ContextMenuStrip ServerListContextMenu;
+        private ToolStripMenuItem openFileListToolStripMenuItem;
     }
 }

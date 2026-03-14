@@ -1,4 +1,6 @@
 ﻿using FileSender.Core;
+using FileSender.Core.Network;
+using FileSender.Core.Network.Server;
 using FileSender.Core.UI;
 using FileSenderWinApp.Forms.Server;
 using System;
@@ -15,6 +17,7 @@ namespace FileSenderWinApp.Forms
 {
     public partial class Main : Form
     {
+        private readonly PacketHandler packetHandler = new Network.ServerPacketHandler(); 
         public Main()
         {
             InitializeComponent();
@@ -48,8 +51,8 @@ namespace FileSenderWinApp.Forms
         {
             if (CoreSettings.CS.ServerCertificate != null)
             {
-                if (FileSender.Core.Server.Listener.Server.IsAwaitingReset)
-                    await FileSender.Core.Server.Listener.Server.StartServer(CoreSettings.CS.Port);
+                if (Listener.Server.IsAwaitingReset)
+                    await Listener.Server.StartServer(CoreSettings.CS.Port, packetHandler);
                 else
                     MessageBox.Show("Server is already running");
             }
@@ -61,8 +64,8 @@ namespace FileSenderWinApp.Forms
 
         private async void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!FileSender.Core.Server.Listener.Server.IsAwaitingReset)
-                await FileSender.Core.Server.Listener.Server.Stop();
+            if (!Listener.Server.IsAwaitingReset)
+                await Listener.Server.Stop();
             else
                 MessageBox.Show("Server isn't running");
         }

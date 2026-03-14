@@ -1,4 +1,7 @@
 ﻿using FileSender.Core.Client;
+using FileSender.Core.Network;
+using FileSender.Core.Network.Client;
+using FileSender.Core.Packets;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +16,7 @@ namespace FileSenderWinApp.Forms.Client
 {
     public partial class ClientServerList : Form
     {
+        private readonly PacketHandler packetHandler = new Network.ClientPacketHandler();
         public ClientServerList()
         {
             InitializeComponent();
@@ -23,21 +27,39 @@ namespace FileSenderWinApp.Forms.Client
             ClientDirectConnect CDC = new ClientDirectConnect();
             if (CDC.ShowDialog() == DialogResult.OK)
             {
-                FileSender.Core.Client.Connection con = new FileSender.Core.Client.Connection();
-                bool connected = await con.Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]));
-                MessageBox.Show(connected.ToString());
-                //await con.ReceiveData();
+                Connection con = new FileSender.Core.Client.Connection();
+                bool connected = await con.Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]), packetHandler);
                 if (connected)
                 {
-                    AddServer(con);                    
+                    AddServer(con);
+                    while (true)
+                    {
+                        await con.ReceiveData();
+                    }
                 }
             }
         }
-        private void AddServer(Connection conn)
+        private async void AddServer(Connection conn)
         {
-            ListViewItem LVI = new ListViewItem(conn.RemoteIP);
-            ClientServerListLV.Items.Add(LVI);
-            FileSender.Core.Client.ServerHandler.SH.AddServer(conn);
+            bool result = await conn.Send(new AuthPacket());
+            if (result) {
+                ListViewItem LVI = new ListViewItem(conn.RemoteIP);
+                ClientServerListLV.Items.Add(LVI);
+                LVI.Tag = conn;
+                ServerHandler.SH.AddServer(conn);
+            }
+        }
+
+        private async void openFileListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem item in ClientServerListLV.Items)
+            {
+                if (item.Selected)
+                {
+                    await ((Connection)item.Tag).SendCMD(new FileListPacketRequest());
+                    FormHandler.ClientServerFileList.Show();
+                }
+            }
         }
     }
 }

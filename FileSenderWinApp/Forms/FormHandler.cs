@@ -14,6 +14,7 @@ namespace FileSenderWinApp.Forms
         public static Form ServerFileList { get; private set; } = new ServerFileList();
         public static Form ServerSettings { get; private set; } = new ServerSettings();
         public static Form ClientServerList { get; private set; } = new ClientServerList();
+        public static Form ClientServerFileList { get; private set; } = new ClientServerFileList();
         public static void Init(Main _main)
         {
             Main = _main;

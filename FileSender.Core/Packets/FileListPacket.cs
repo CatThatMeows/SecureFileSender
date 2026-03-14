@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace FileSender.Core.Packets
 {
-    internal class FileListPacket
+    public class FileListPacket : Packet
     {
         public List<FileData> Files { get; set; }
+        public FileListPacket() {
+            Files = UI.FileData.ServerFiles;
+            PacketType = PacketType.FileListPacket;
+        }
     }
 }
