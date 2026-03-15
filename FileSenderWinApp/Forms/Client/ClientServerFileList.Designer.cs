@@ -64,12 +64,12 @@
             // 
             SelectFileDownloadMenuStrip.Items.AddRange(new ToolStripItem[] { downloadToolStripMenuItem });
             SelectFileDownloadMenuStrip.Name = "SelectFileDownloadMenuStrip";
-            SelectFileDownloadMenuStrip.Size = new Size(181, 48);
+            SelectFileDownloadMenuStrip.Size = new Size(129, 26);
             // 
             // downloadToolStripMenuItem
             // 
             downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
-            downloadToolStripMenuItem.Size = new Size(180, 22);
+            downloadToolStripMenuItem.Size = new Size(128, 22);
             downloadToolStripMenuItem.Text = "Download";
             downloadToolStripMenuItem.Click += downloadToolStripMenuItem_Click;
             // 
@@ -86,11 +86,10 @@
         }
 
         #endregion
-
-        private ListView ClientServerFileListLV;
         private ColumnHeader FileNameCol;
         private ColumnHeader SizeCol;
         private ContextMenuStrip SelectFileDownloadMenuStrip;
         private ToolStripMenuItem downloadToolStripMenuItem;
+        public ListView ClientServerFileListLV;
     }
 }

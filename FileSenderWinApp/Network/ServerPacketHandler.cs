@@ -25,7 +25,7 @@ namespace FileSenderWinApp.Network
             }
             else if(packetType == PacketType.FileListPacketRequest)
             {
-                await con.SendCMD(new FileListPacket());
+                await con.SendCMD(FileListPacket.CreateFileList());
             }
             else if(packetType == PacketType.FileDownloadRequest)
             {

@@ -56,9 +56,12 @@ namespace FileSenderWinApp.Forms.Client
             {
                 if (item.Selected)
                 {
+                    ((ClientServerFileList)FormHandler.ClientServerFileList).ClientServerFileListLV.Items.Clear();
+
                     await ((Connection)item.Tag).SendCMD(new FileListPacketRequest());
                     ((ClientServerFileList)FormHandler.ClientServerFileList).IP = ((Connection)item.Tag).RemoteIP;
                     ((ClientServerFileList)FormHandler.ClientServerFileList).Port = ((Connection)item.Tag).Port;
+
                     FormHandler.ClientServerFileList.Show();
                 }
             }

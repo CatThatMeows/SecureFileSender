@@ -3,15 +3,6 @@ using FileSender.Core.Network;
 using FileSender.Core.Network.Server;
 using FileSender.Core.UI;
 using FileSenderWinApp.Forms.Server;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FileSenderWinApp.Forms
 {

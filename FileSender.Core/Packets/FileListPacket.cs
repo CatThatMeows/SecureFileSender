@@ -10,9 +10,12 @@ namespace FileSender.Core.Packets
     public class FileListPacket : Packet
     {
         public List<FileData> Files { get; set; }
-        public FileListPacket() {
-            Files = UI.FileData.ServerFiles;
-            PacketType = PacketType.FileListPacket;
+        public static FileListPacket CreateFileList() {
+            FileListPacket flp = new FileListPacket() {
+                Files = UI.FileData.ServerFiles,
+                PacketType = PacketType.FileListPacket
+            };
+            return flp;
         }
     }
 }
