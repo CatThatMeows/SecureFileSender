@@ -14,7 +14,6 @@ namespace FileSender.Core.Network.Server
     public class Listener
     {
         public static Listener Server { get; private set; } = new Listener();
-
         private Socket ServerSocket { get; set; }
         private CancellationTokenSource ServerCTS { get; set; }
         public bool IsAwaitingReset { get; private set; } = true;
@@ -51,7 +50,12 @@ namespace FileSender.Core.Network.Server
                     Socket clientSocket = await ServerSocket.AcceptAsync(ct);
 
                     ClientNode node = new ClientNode();
-                    await node.CreateNode(clientSocket, packetHandler, ct);
+                    node = await node.CreateNode(clientSocket, packetHandler, ct);
+
+                    if(node != null)
+                    {
+                        ClientList.CL.AddClient(node);
+                    }
 
                      _ = node.HandleClient();                    
                 }

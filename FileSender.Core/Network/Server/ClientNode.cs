@@ -1,4 +1,5 @@
 ﻿using FileSender.Core.Packets;
+using FileSender.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace FileSender.Core.Network.Server
     {
         private CancellationToken ServerCT { get; set; }
         public string IP { get; set; }
-        public string FullID { get; set; }
+        public Guid FullID { get; set; }
 
         public async Task<ClientNode> CreateNode(Socket clientSocket, PacketHandler packetHandler ,CancellationToken serverCT)
         {
@@ -38,23 +39,24 @@ namespace FileSender.Core.Network.Server
 
             return this;
         }
-
-        public void Send(Packet packet)
-        {
-            //Test
-            byte[] b = packet.Serialize();
-            SSLStream.Write(BitConverter.GetBytes(packet.Size));
-            Debug.WriteLine(b.Length);
-            byte[] a = new byte[1];
-            a[0] = (byte)packet.PacketType;
-            SSLStream.Write(a);
-            SSLStream.Write(b);
-        }
         public async Task HandleClient()
         {
             while (!ServerCT.IsCancellationRequested)
             {
                 await ReceiveData();
+            }
+        }
+
+        public async Task SendFile(FileData file)
+        {
+            FileStream fs = new FileStream(file.FileLocation, FileMode.Open, FileAccess.Read, FileShare.Read);
+            
+            byte[] sendBuffer = new byte[32768];
+            int bytesRead;
+
+            while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, ServerCT)) > 0)
+            {
+                await SSLStream.WriteAsync(sendBuffer, 0, bytesRead, ServerCT);
             }
         }
     }

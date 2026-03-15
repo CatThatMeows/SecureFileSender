@@ -1,4 +1,5 @@
-﻿using FileSender.Core.Network;
+﻿using FileSender.Core.Client;
+using FileSender.Core.Network;
 using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSenderWinApp.Forms;
@@ -14,18 +15,14 @@ namespace FileSenderWinApp.Network
     {
         public async Task Handle(NetworkCore con, PacketType packetType, ArraySegment<byte> bytes)
         {
-            if (packetType == PacketType.AuthPacket)
-            {
-                //await con.SendCMD(new FileListPacket());
-            }
-            else if (packetType == PacketType.FileListPacket)
+            if (packetType == PacketType.FileListPacket)
             {
                 FileListPacket packet = JsonConvert.DeserializeObject<FileListPacket>(UTF8Encoding.UTF8.GetString(bytes));
                 ((ClientServerFileList)FormHandler.ClientServerFileList).AddFiles(packet.Files);
             }
             else
             {
-                MessageBox.Show("fuck");
+                
             }
         }
     }

@@ -17,6 +17,7 @@ namespace FileSender.Core.Client
     public class Connection : NetworkCore
     {
         public string RemoteIP { get; private set; }
+        public int Port { get; private set; }
         CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
@@ -24,6 +25,7 @@ namespace FileSender.Core.Client
             this.CT = ClientCTS.Token;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             RemoteIP = ip;
+            Port = port;
             IsServer = false;
             this.PacketHandler = packetHandler;
             try
@@ -49,27 +51,6 @@ namespace FileSender.Core.Client
             {
                 return false;
             }
-        }
-        public async Task<bool> Send(Packet packet)
-        {
-            //TEST
-            try
-            {
-                byte[] packetBytes = packet.Serialize();
-                byte[] packetType = new byte[1];
-                packetType[0] = (byte)packet.PacketType;
-                Debug.WriteLine("packet size: " + packet.Size);
-                await SSLStream.WriteAsync(BitConverter.GetBytes(packet.Size), ClientCTS.Token);
-                await SSLStream.WriteAsync(packetType, ClientCTS.Token);
-                await SSLStream.WriteAsync(packetBytes, ClientCTS.Token);
-            }
-            catch (Exception ex) {
-                //Disconnect
-
-                return false;
-            }
-
-            return true;
         }
     }
 }

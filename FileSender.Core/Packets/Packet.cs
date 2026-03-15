@@ -36,6 +36,7 @@ namespace FileSender.Core.Packets
         AuthPacket = 0,
         FileListPacket = 64,
         FileListPacketRequest = 65,
+        FileDownloadRequest = 128,
         InvalidPacket = 255
     }
 }

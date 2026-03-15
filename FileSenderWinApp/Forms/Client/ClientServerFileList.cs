@@ -1,4 +1,9 @@
-﻿using FileSender.Core.UI;
+﻿using FileSender.Core.Client;
+using FileSender.Core.Network;
+using FileSender.Core.Network.Client;
+using FileSender.Core.Network.Server;
+using FileSender.Core.Packets;
+using FileSender.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +16,11 @@ namespace FileSenderWinApp.Forms.Client
 {
     public partial class ClientServerFileList : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string IP { get; set; } = String.Empty;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int Port { get; set; } = 0;
+
         public ClientServerFileList()
         {
             InitializeComponent();
@@ -22,7 +32,28 @@ namespace FileSenderWinApp.Forms.Client
             {
                 ListViewItem LVI = new ListViewItem(file.FileName);
                 LVI.SubItems.Add(file.FileSize.ToString());
+                LVI.Tag = file;
                 ClientServerFileListLV.Items.Add(LVI);
+            }
+        }
+
+        private async void downloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem item in ClientServerFileListLV.Items)
+            {
+                if (item.Selected)
+                {
+                    FileDownloadConnection fdc = new FileDownloadConnection((FileData)item.Tag);
+                    bool connected = await fdc.Connect(IP, Port, null);
+                    if (connected)
+                    {
+                        await fdc.SendCMD(new FileDownloadRequest(((FileData)item.Tag).ID));
+                        while (!fdc.ClientCTS.IsCancellationRequested)
+                        {
+                            await fdc.ReceiveData();
+                        }
+                    }
+                }
             }
         }
     }

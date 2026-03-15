@@ -30,6 +30,13 @@ namespace FileSender.Core.Network
         public CancellationToken CT { get; set; }
         public PacketHandler PacketHandler { get; set; }
         public bool IsServer { get; set; }
+        public bool IsConnected 
+        { 
+            get
+            {
+                return ClientSocket.Connected;
+            } 
+        }
 
         public async Task ReceiveData()
         {

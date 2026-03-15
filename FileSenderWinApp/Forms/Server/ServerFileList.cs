@@ -34,7 +34,8 @@ namespace FileSenderWinApp.Forms.Server
                         {
                             FileSize = info.Length,
                             FileLocation = info.FullName,
-                            FileName = info.Name
+                            FileName = info.Name,
+                            ID = Guid.NewGuid()
                         };
 
                         FileData.AddToServerFiles(data);

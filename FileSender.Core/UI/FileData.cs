@@ -30,6 +30,7 @@ namespace FileSender.Core.UI
             }
         }
 
+        public Guid ID { get; set; }
         public string FileName { get; set; } = string.Empty; //Full name including extension
         public string FileLocation { get; set; } = string.Empty; //File full location
         public long FileSize { get; set; }

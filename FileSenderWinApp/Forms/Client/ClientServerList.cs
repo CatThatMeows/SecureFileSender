@@ -41,7 +41,7 @@ namespace FileSenderWinApp.Forms.Client
         }
         private async void AddServer(Connection conn)
         {
-            bool result = await conn.Send(new AuthPacket());
+            bool result = await conn.SendCMD(new AuthPacket());
             if (result) {
                 ListViewItem LVI = new ListViewItem(conn.RemoteIP);
                 ClientServerListLV.Items.Add(LVI);
@@ -57,6 +57,8 @@ namespace FileSenderWinApp.Forms.Client
                 if (item.Selected)
                 {
                     await ((Connection)item.Tag).SendCMD(new FileListPacketRequest());
+                    ((ClientServerFileList)FormHandler.ClientServerFileList).IP = ((Connection)item.Tag).RemoteIP;
+                    ((ClientServerFileList)FormHandler.ClientServerFileList).Port = ((Connection)item.Tag).Port;
                     FormHandler.ClientServerFileList.Show();
                 }
             }

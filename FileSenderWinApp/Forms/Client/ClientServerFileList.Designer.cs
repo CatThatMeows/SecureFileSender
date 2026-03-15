@@ -28,14 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             ClientServerFileListLV = new ListView();
             FileNameCol = new ColumnHeader();
             SizeCol = new ColumnHeader();
+            SelectFileDownloadMenuStrip = new ContextMenuStrip(components);
+            downloadToolStripMenuItem = new ToolStripMenuItem();
+            SelectFileDownloadMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // ClientServerFileListLV
             // 
             ClientServerFileListLV.Columns.AddRange(new ColumnHeader[] { FileNameCol, SizeCol });
+            ClientServerFileListLV.ContextMenuStrip = SelectFileDownloadMenuStrip;
             ClientServerFileListLV.Dock = DockStyle.Fill;
             ClientServerFileListLV.Location = new Point(0, 0);
             ClientServerFileListLV.Name = "ClientServerFileListLV";
@@ -55,6 +60,19 @@
             SizeCol.TextAlign = HorizontalAlignment.Center;
             SizeCol.Width = 150;
             // 
+            // SelectFileDownloadMenuStrip
+            // 
+            SelectFileDownloadMenuStrip.Items.AddRange(new ToolStripItem[] { downloadToolStripMenuItem });
+            SelectFileDownloadMenuStrip.Name = "SelectFileDownloadMenuStrip";
+            SelectFileDownloadMenuStrip.Size = new Size(181, 48);
+            // 
+            // downloadToolStripMenuItem
+            // 
+            downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
+            downloadToolStripMenuItem.Size = new Size(180, 22);
+            downloadToolStripMenuItem.Text = "Download";
+            downloadToolStripMenuItem.Click += downloadToolStripMenuItem_Click;
+            // 
             // ClientServerFileList
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -63,6 +81,7 @@
             Controls.Add(ClientServerFileListLV);
             Name = "ClientServerFileList";
             Text = "ClientServerFileList";
+            SelectFileDownloadMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -71,5 +90,7 @@
         private ListView ClientServerFileListLV;
         private ColumnHeader FileNameCol;
         private ColumnHeader SizeCol;
+        private ContextMenuStrip SelectFileDownloadMenuStrip;
+        private ToolStripMenuItem downloadToolStripMenuItem;
     }
 }
