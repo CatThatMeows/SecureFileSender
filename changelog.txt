@@ -6,3 +6,8 @@ MM.DD
 - Client can download the filelist from the server
 - Progress on file download (mostly ready for basic use)
 - Refactored network code, other file structures
+
+03.15 - 03.30
+- Fixed file receive for large files
+- Added compression to packet sends, file sends
+* File send will be ready for use shortly
