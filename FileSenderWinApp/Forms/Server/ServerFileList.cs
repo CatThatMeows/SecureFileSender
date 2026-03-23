@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,6 +23,7 @@ namespace FileSenderWinApp.Forms.Server
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using MD5 md5 = MD5.Create();
             using (OpenFileDialog opf = new OpenFileDialog()) {
                 opf.Multiselect = true;
                 

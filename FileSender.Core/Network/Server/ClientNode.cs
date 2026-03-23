@@ -1,8 +1,10 @@
 ﻿using FileSender.Core.Packets;
+using FileSender.Core.Tools;
 using FileSender.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -49,14 +51,16 @@ namespace FileSender.Core.Network.Server
 
         public async Task SendFile(FileData file)
         {
-            FileStream fs = new FileStream(file.FileLocation, FileMode.Open, FileAccess.Read, FileShare.Read);
-            
-            byte[] sendBuffer = new byte[32768];
-            int bytesRead;
-
-            while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, ServerCT)) > 0)
+            using (FileStream fs = new FileStream(file.FileLocation, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (GZipStream gz = new GZipStream(SSLStream, CompressionMode.Compress, leaveOpen: true))
             {
-                await SSLStream.WriteAsync(sendBuffer, 0, bytesRead, ServerCT);
+                byte[] sendBuffer = new byte[65536];
+                int bytesRead;
+
+                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, ServerCT)) > 0)
+                {
+                    await gz.WriteAsync(sendBuffer, 0, bytesRead, ServerCT);
+                }
             }
         }
     }

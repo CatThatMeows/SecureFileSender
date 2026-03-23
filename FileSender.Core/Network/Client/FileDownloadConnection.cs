@@ -1,13 +1,16 @@
 ﻿using FileSender.Core.Client;
 using FileSender.Core.Packets;
+using FileSender.Core.Tools;
 using FileSender.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FileSender.Core.Network.Client
@@ -16,7 +19,8 @@ namespace FileSender.Core.Network.Client
     {
         private FileData File { get; set; }
         private FileStream FS { get; set; } = new FileStream(@"C:\Users\MeowingCat\Desktop\test.p12", FileMode.Create, FileAccess.Write, FileShare.None);
-        private int ChunkSize = 32768;
+        private const int ChunkSize = 16384;
+        private string Hash { get; set; }
         public CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
         public FileDownloadConnection(FileData file)
         {
@@ -24,18 +28,23 @@ namespace FileSender.Core.Network.Client
             IsServer = false;
             BytesToReceiveFull = File.FileSize;
             BytesToReceive = ChunkSize;
-            if(file.FileSize < 32768)
+            Hash = file.OGHash;
+            if(file.FileSize < ChunkSize)
             {
                 BytesToReceive = (int)file.FileSize;
                 BytesToReceiveFull = file.FileSize;
             }
-            base.Buffer = new byte[32768];
+            base.Buffer = new byte[16384];
         }
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
             this.CT = ClientCTS.Token;
-            ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            {
+                ReceiveBufferSize = ChunkSize,
+                SendBufferSize = ChunkSize
+            };
             IsServer = false;
             this.PacketHandler = packetHandler;
             try
@@ -65,41 +74,22 @@ namespace FileSender.Core.Network.Client
 
         public async Task ReceiveData()
         {
+            using GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true);
             while (!CT.IsCancellationRequested)
             {
-                int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CT);
-                Debug.WriteLine("Read: " + read);
+                int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CT);
                 if (read > 0)
                 {
-                    BufferIndex += read;
-                    BytesToReceiveFull -= read;
-                    BytesToReceive -= read;
-                    Debug.WriteLine(BytesToReceiveFull);
-                    if(BytesToReceive == 0)
-                    {
-                        //Write Chunk to File
-                        FS.Write(Buffer, 0, read);
-                        Debug.WriteLine("FileWrite");
-                        if(BytesToReceiveFull > 32768)
-                        {
-                            BytesToReceive = 32768;
-                        }
-                        else
-                        {
-                            BytesToReceive = (int)BytesToReceiveFull;
-                        }
-                    }
-                    if(BytesToReceiveFull == 0)
-                    {
-                        FS.Close();
-                        ClientCTS.Cancel();
-                    }
+                    await FS.WriteAsync(Buffer, 0, read, CT);
                 }
                 else
                 {
-                    //Disconnect
+                    break;
                 }
             }
+
+            FS.Close();
+            ClientCTS.Cancel();
         }
     }
 }

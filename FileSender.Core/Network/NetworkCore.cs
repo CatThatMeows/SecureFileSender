@@ -1,4 +1,5 @@
 ﻿using FileSender.Core.Packets;
+using FileSender.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,7 +80,7 @@ namespace FileSender.Core.Network
                             //Receive data
                             Debug.WriteLine("We have received all data????");
                             ArraySegment<byte> segment = new ArraySegment<byte>(Buffer, 0, (int)BytesToReceiveFullND);
-                            await PacketHandler.Handle(this, (PacketType)PacketRead, segment);
+                            await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CT));
 
                             //Reset variables
                             BufferIndex = 0;
@@ -96,24 +97,31 @@ namespace FileSender.Core.Network
                 }
             }
         }
+        public async Task<bool> SetToFileSendCon(int ChunkSize)
+        {
+            ClientSocket.SendBufferSize = ChunkSize;
+            ClientSocket.ReceiveBufferSize = ChunkSize;
+
+            return true;
+        }
 
         public async Task<bool> SendCMD(Packet packet)
         {
             //TEST
             try
             {
-                byte[] packetBytes = packet.Serialize();
+                byte[] compressedPacketBytes = await GZip.CompressData(packet.Serialize(), CT);
                 byte[] packetType = new byte[1];
                 packetType[0] = (byte)packet.PacketType;
                 Debug.WriteLine("packet size: " + packet.Size);
-                await SSLStream.WriteAsync(BitConverter.GetBytes(packet.Size), CT);
+                await SSLStream.WriteAsync(BitConverter.GetBytes(compressedPacketBytes.LongLength), CT);
                 await SSLStream.WriteAsync(packetType, CT);
-                await SSLStream.WriteAsync(packetBytes, CT);
+                await SSLStream.WriteAsync(compressedPacketBytes, CT);
             }
             catch (Exception ex)
             {
                 //Disconnect
-
+                Debug.WriteLine(ex.Message);
                 return false;
             }
 
