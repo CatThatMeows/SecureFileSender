@@ -33,7 +33,7 @@ namespace FileSender.Core.Network.Client
                 BytesToReceive = (int)file.FileSize;
                 BytesToReceiveFull = file.FileSize;
             }
-            base.Buffer = new byte[16384];
+            base.Buffer = new byte[ChunkSize];
         }
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)

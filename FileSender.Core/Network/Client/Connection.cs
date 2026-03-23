@@ -18,11 +18,11 @@ namespace FileSender.Core.Client
     {
         public string RemoteIP { get; private set; }
         public int Port { get; private set; }
-        CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
+        CancellationTokenSource CTS { get; set; } = new CancellationTokenSource();
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
-            this.CT = ClientCTS.Token;
+            base.CT = CTS.Token;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             RemoteIP = ip;
             Port = port;
@@ -30,7 +30,7 @@ namespace FileSender.Core.Client
             this.PacketHandler = packetHandler;
             try
             {
-                await ClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port), ClientCTS.Token);
+                await ClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port), CTS.Token);
             }
             catch (Exception ex) { return false; }
             if (ClientSocket.Connected)
