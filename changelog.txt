@@ -11,4 +11,6 @@ MM.DD
 - File sending now works
 - Fixed file receive for large files
 - Fixed file receive for files below chunksize
+- Updated certificate loading
 - Added compression to packet sends, file sends
+- Simplified network code

@@ -24,17 +24,23 @@ namespace FileSender.Core
             if (!string.IsNullOrWhiteSpace(Path)) {
                 if(Path != Directory.GetCurrentDirectory() + "\\" + CertificatePath)
                     File.Copy(Path, CertificatePath, true);
-                SetCertificate(new X509Certificate2(CertificatePath, password));
+                SetCertificate(LoadCertificate(password));
                 return true;
             }
             else if (!string.IsNullOrWhiteSpace(CertificatePath))
             {
-                SetCertificate(new X509Certificate2(CertificatePath, password));
+                SetCertificate(LoadCertificate(password));
                 return true;
             }
 
             return false;
         }
+
+        private X509Certificate2 LoadCertificate(string password)
+        {
+            return X509CertificateLoader.LoadPkcs12FromFile(CertificatePath, password);
+        }
+        
         public void SetCertificate(X509Certificate2 cert)
         {
             ServerCertificate = cert;
