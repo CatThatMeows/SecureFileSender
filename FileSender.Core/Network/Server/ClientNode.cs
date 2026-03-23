@@ -54,13 +54,16 @@ namespace FileSender.Core.Network.Server
             using (FileStream fs = new FileStream(file.FileLocation, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (GZipStream gz = new GZipStream(SSLStream, CompressionMode.Compress, leaveOpen: true))
             {
-                byte[] sendBuffer = new byte[65536];
+                byte[] sendBuffer = new byte[16384];
                 int bytesRead;
 
                 while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, ServerCT)) > 0)
                 {
                     await gz.WriteAsync(sendBuffer, 0, bytesRead, ServerCT);
                 }
+
+                await gz.FlushAsync();
+                gz.Close();
             }
         }
     }

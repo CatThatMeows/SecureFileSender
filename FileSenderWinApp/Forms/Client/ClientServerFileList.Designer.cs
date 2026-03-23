@@ -34,6 +34,7 @@
             SizeCol = new ColumnHeader();
             SelectFileDownloadMenuStrip = new ContextMenuStrip(components);
             downloadToolStripMenuItem = new ToolStripMenuItem();
+            this.FormClosing += HideForm;
             SelectFileDownloadMenuStrip.SuspendLayout();
             SuspendLayout();
             // 

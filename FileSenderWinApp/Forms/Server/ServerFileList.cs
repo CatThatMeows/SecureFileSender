@@ -18,12 +18,10 @@ namespace FileSenderWinApp.Forms.Server
         public ServerFileList()
         {
             InitializeComponent();
-
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using MD5 md5 = MD5.Create();
             using (OpenFileDialog opf = new OpenFileDialog()) {
                 opf.Multiselect = true;
                 

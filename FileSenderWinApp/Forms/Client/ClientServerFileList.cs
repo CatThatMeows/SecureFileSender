@@ -20,6 +20,8 @@ namespace FileSenderWinApp.Forms.Client
         public string IP { get; set; } = String.Empty;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Port { get; set; } = 0;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool Hidden { get; set; } = false;
 
         public ClientServerFileList()
         {
@@ -54,6 +56,15 @@ namespace FileSenderWinApp.Forms.Client
                         }
                     }
                 }
+            }
+        }
+        private void HideForm(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+                this.Hidden = true;
             }
         }
     }

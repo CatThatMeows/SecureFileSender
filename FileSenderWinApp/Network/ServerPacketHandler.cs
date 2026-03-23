@@ -35,7 +35,6 @@ namespace FileSenderWinApp.Network
                     if (FileData.ServerFiles[i].ID == req.FileID)
                     {
                         //Do something with this later
-                        con.SetToFileSendCon(65536);
                         _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
                     }
                 }

@@ -97,14 +97,6 @@ namespace FileSender.Core.Network
                 }
             }
         }
-        public async Task<bool> SetToFileSendCon(int ChunkSize)
-        {
-            ClientSocket.SendBufferSize = ChunkSize;
-            ClientSocket.ReceiveBufferSize = ChunkSize;
-
-            return true;
-        }
-
         public async Task<bool> SendCMD(Packet packet)
         {
             //TEST

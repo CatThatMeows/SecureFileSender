@@ -2,6 +2,7 @@
 using FileSender.Core.Packets;
 using FileSender.Core.Tools;
 using FileSender.Core.UI;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,9 +19,8 @@ namespace FileSender.Core.Network.Client
     public class FileDownloadConnection : NetworkCore
     {
         private FileData File { get; set; }
-        private FileStream FS { get; set; } = new FileStream(@"C:\Users\MeowingCat\Desktop\test.p12", FileMode.Create, FileAccess.Write, FileShare.None);
+        private FileStream FS { get; set; }
         private const int ChunkSize = 16384;
-        private string Hash { get; set; }
         public CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
         public FileDownloadConnection(FileData file)
         {
@@ -28,7 +28,6 @@ namespace FileSender.Core.Network.Client
             IsServer = false;
             BytesToReceiveFull = File.FileSize;
             BytesToReceive = ChunkSize;
-            Hash = file.OGHash;
             if(file.FileSize < ChunkSize)
             {
                 BytesToReceive = (int)file.FileSize;
@@ -54,6 +53,10 @@ namespace FileSender.Core.Network.Client
             catch (Exception ex) { Debug.WriteLine(ex.Message); return false; }
             if (ClientSocket.Connected)
             {
+                string folder = ClientSocket.RemoteEndPoint.ToString().Split(':')[0];
+                if (!Directory.Exists(folder)) 
+                    Directory.CreateDirectory(folder); 
+                FS = new FileStream(folder + "\\" + File.FileName, FileMode.Create, FileAccess.Write, FileShare.None);
                 SSLStream = new SslStream(new NetworkStream(ClientSocket, true), false,
                             userCertificateValidationCallback: (sender, certificate, chain, errors) =>
                             {
@@ -78,6 +81,7 @@ namespace FileSender.Core.Network.Client
             while (!CT.IsCancellationRequested)
             {
                 int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CT);
+                BytesToReceiveFull -= read;
                 if (read > 0)
                 {
                     await FS.WriteAsync(Buffer, 0, read, CT);
@@ -86,6 +90,9 @@ namespace FileSender.Core.Network.Client
                 {
                     break;
                 }
+
+                if (BytesToReceiveFull == 0)
+                    break;
             }
 
             FS.Close();

@@ -2,12 +2,11 @@
 {
     public class FileDownloadRequest : Packet
     {
-        public Guid ClientID { get; set; }
         public Guid FileID { get; set; }
-        public FileDownloadRequest(Guid ID)
+        public FileDownloadRequest(Guid _FileID)
         {
             PacketType = PacketType.FileDownloadRequest;
-            FileID = ID;
+            FileID = _FileID;
         }
     }
 }

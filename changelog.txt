@@ -8,6 +8,7 @@ MM.DD
 - Refactored network code, other file structures
 
 03.15 - 03.30
+- File sending now works
 - Fixed file receive for large files
+- Fixed file receive for files below chunksize
 - Added compression to packet sends, file sends
-* File send will be ready for use shortly
