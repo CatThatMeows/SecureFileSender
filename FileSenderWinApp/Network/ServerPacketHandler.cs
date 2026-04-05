@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FileSenderWinApp.Network
@@ -34,8 +35,21 @@ namespace FileSenderWinApp.Network
                 {
                     if (FileData.ServerFiles[i].ID == req.FileID)
                     {
-                        //Do something with this later
-                        _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
+                        if (FileData.ServerFiles[i].IsPassworded)
+                        {
+                            if (FileData.ServerFiles[i].PasswordHash == req.ReqPasswordHash)
+                            {
+                                _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
+                            }
+                            else
+                            {
+                                //Send denied response
+                                //---
+
+                            }
+                        }
+                        else
+                            _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
                     }
                 }
             }

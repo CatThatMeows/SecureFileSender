@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FileSender.Core.UI
 {
@@ -10,6 +12,11 @@ namespace FileSender.Core.UI
         public static void AddToServerFiles(FileData data)
         {
             ServerFiles.Add(data);
+            WriteToFile();
+        }
+
+        public static void WriteToFile()
+        {
             File.WriteAllText
                 ("ServerFiles.json", JsonConvert.SerializeObject(ServerFiles));
         }
@@ -19,20 +26,29 @@ namespace FileSender.Core.UI
             if (File.Exists("ServerFiles.json"))
             {
                 List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
-                if(loadedFile != null)
+                if (loadedFile != null)
                     ServerFiles = loadedFile;
             }
             if (File.Exists("ClientFiles.json"))
             {
                 List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
-                if(loadedFile != null)
+                if (loadedFile != null)
                     ClientFiles = loadedFile;
             }
+        }
+
+        public void SetPassword(string password)
+        {
+            IsPassworded = true;
+            byte[] hashedPass = SHA512.HashData(Encoding.UTF8.GetBytes(password));
+            PasswordHash = Convert.ToHexString(hashedPass);
         }
 
         public Guid ID { get; set; }
         public string FileName { get; set; } = string.Empty; //Full name including extension
         public string FileLocation { get; set; } = string.Empty; //File full location
+        public string PasswordHash { get; set; } = string.Empty;
+        public bool IsPassworded { get; set; } = false;
         public long FileSize { get; set; }
     }
 }

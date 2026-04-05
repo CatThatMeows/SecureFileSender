@@ -32,7 +32,10 @@ namespace FileSender.Core.Client
             {
                 await ClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port), CTS.Token);
             }
-            catch (Exception ex) { return false; }
+            catch (Exception ex) { 
+                                    await CTS.CancelAsync(); 
+                                    return false; 
+                                 }
             if (ClientSocket.Connected)
             {
                 SSLStream = new SslStream(new NetworkStream(ClientSocket, true), false,

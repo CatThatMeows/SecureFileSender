@@ -21,15 +21,6 @@ namespace FileSender.Core.Packets
             this.Size = UTF8Encoding.UTF8.GetByteCount(packetString);
             return UTF8Encoding.UTF8.GetBytes(packetString);
         }
-
-        public static Packet DeSerialize(byte[] input)
-        {
-            string PacketString = UTF8Encoding.UTF8.GetString(input);
-            Packet packet = JsonConvert.DeserializeObject<Packet>(PacketString);
-            if (packet == null)
-                packet = new Packet() { PacketType = PacketType.InvalidPacket };
-            return packet;
-        }
     }
     public enum PacketType : byte
     {

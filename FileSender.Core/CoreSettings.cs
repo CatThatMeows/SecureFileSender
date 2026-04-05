@@ -21,18 +21,22 @@ namespace FileSender.Core
 
         public bool ImportCertificate(string password, string Path = null)
         {
-            if (!string.IsNullOrWhiteSpace(Path)) {
-                if(Path != Directory.GetCurrentDirectory() + "\\" + CertificatePath)
-                    File.Copy(Path, CertificatePath, true);
-                SetCertificate(LoadCertificate(password));
-                return true;
-            }
-            else if (!string.IsNullOrWhiteSpace(CertificatePath))
+            try
             {
-                SetCertificate(LoadCertificate(password));
-                return true;
+                if (!string.IsNullOrWhiteSpace(Path))
+                {
+                    if (Path != Directory.GetCurrentDirectory() + "\\" + CertificatePath)
+                        File.Copy(Path, CertificatePath, true);
+                    SetCertificate(LoadCertificate(password));
+                    return true;
+                }
+                else if (!string.IsNullOrWhiteSpace(CertificatePath))
+                {
+                    SetCertificate(LoadCertificate(password));
+                    return true;
+                }
             }
-
+            catch (Exception ex) { return false; }
             return false;
         }
 

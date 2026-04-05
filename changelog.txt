@@ -14,3 +14,7 @@ MM.DD
 - Updated certificate loading
 - Added compression to packet sends, file sends
 - Simplified network code
+
+03.30 - 04.6
+- Progress on passworded file downloads
+- Added more error checking, less unnecessary crashes

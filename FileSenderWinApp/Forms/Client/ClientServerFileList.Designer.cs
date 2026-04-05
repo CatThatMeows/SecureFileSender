@@ -34,18 +34,19 @@
             SizeCol = new ColumnHeader();
             SelectFileDownloadMenuStrip = new ContextMenuStrip(components);
             downloadToolStripMenuItem = new ToolStripMenuItem();
-            this.FormClosing += HideForm;
+            PasswordedCol = new ColumnHeader();
             SelectFileDownloadMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // ClientServerFileListLV
             // 
-            ClientServerFileListLV.Columns.AddRange(new ColumnHeader[] { FileNameCol, SizeCol });
+            ClientServerFileListLV.Columns.AddRange(new ColumnHeader[] { FileNameCol, SizeCol, PasswordedCol });
             ClientServerFileListLV.ContextMenuStrip = SelectFileDownloadMenuStrip;
             ClientServerFileListLV.Dock = DockStyle.Fill;
             ClientServerFileListLV.Location = new Point(0, 0);
+            ClientServerFileListLV.Margin = new Padding(3, 4, 3, 4);
             ClientServerFileListLV.Name = "ClientServerFileListLV";
-            ClientServerFileListLV.Size = new Size(800, 450);
+            ClientServerFileListLV.Size = new Size(914, 600);
             ClientServerFileListLV.TabIndex = 0;
             ClientServerFileListLV.UseCompatibleStateImageBehavior = false;
             ClientServerFileListLV.View = View.Details;
@@ -53,7 +54,7 @@
             // FileNameCol
             // 
             FileNameCol.Text = "Filename";
-            FileNameCol.Width = 200;
+            FileNameCol.Width = 120;
             // 
             // SizeCol
             // 
@@ -63,25 +64,33 @@
             // 
             // SelectFileDownloadMenuStrip
             // 
+            SelectFileDownloadMenuStrip.ImageScalingSize = new Size(20, 20);
             SelectFileDownloadMenuStrip.Items.AddRange(new ToolStripItem[] { downloadToolStripMenuItem });
             SelectFileDownloadMenuStrip.Name = "SelectFileDownloadMenuStrip";
-            SelectFileDownloadMenuStrip.Size = new Size(129, 26);
+            SelectFileDownloadMenuStrip.Size = new Size(148, 28);
             // 
             // downloadToolStripMenuItem
             // 
             downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
-            downloadToolStripMenuItem.Size = new Size(128, 22);
+            downloadToolStripMenuItem.Size = new Size(147, 24);
             downloadToolStripMenuItem.Text = "Download";
             downloadToolStripMenuItem.Click += downloadToolStripMenuItem_Click;
             // 
+            // PasswordedCol
+            // 
+            PasswordedCol.Text = "Passworded";
+            PasswordedCol.Width = 120;
+            // 
             // ClientServerFileList
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(914, 600);
             Controls.Add(ClientServerFileListLV);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "ClientServerFileList";
             Text = "ClientServerFileList";
+            FormClosing += HideForm;
             SelectFileDownloadMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -92,5 +101,6 @@
         private ContextMenuStrip SelectFileDownloadMenuStrip;
         private ToolStripMenuItem downloadToolStripMenuItem;
         public ListView ClientServerFileListLV;
+        private ColumnHeader PasswordedCol;
     }
 }

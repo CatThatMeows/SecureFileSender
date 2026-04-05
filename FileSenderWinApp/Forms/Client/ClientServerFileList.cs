@@ -1,16 +1,11 @@
 ﻿using FileSender.Core.Client;
-using FileSender.Core.Network;
 using FileSender.Core.Network.Client;
-using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSender.Core.UI;
-using System;
-using System.Collections.Generic;
+using Org.BouncyCastle.Ocsp;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Forms;
 
 namespace FileSenderWinApp.Forms.Client
 {
@@ -34,6 +29,7 @@ namespace FileSenderWinApp.Forms.Client
             {
                 ListViewItem LVI = new ListViewItem(file.FileName);
                 LVI.SubItems.Add(file.FileSize.ToString());
+                LVI.SubItems.Add(file.IsPassworded ? "true" : "false");
                 LVI.Tag = file;
                 ClientServerFileListLV.Items.Add(LVI);
             }
@@ -43,13 +39,25 @@ namespace FileSenderWinApp.Forms.Client
         {
             foreach(ListViewItem item in ClientServerFileListLV.Items)
             {
+                string password = String.Empty;
                 if (item.Selected)
                 {
+                    FileDownloadRequest FDR = new FileDownloadRequest(((FileData)item.Tag).ID);
+                    if (((FileData)item.Tag).IsPassworded)
+                    {
+                        PasswordInput PIF = new PasswordInput("This file is passworded. Input the password", false);
+                        if(PIF.ShowDialog() == DialogResult.OK)
+                        {
+                            byte[] passHash = SHA512.HashData(Encoding.UTF8.GetBytes(PIF.PasswordInputFormTB.Text));
+                            string passString = Convert.ToHexString(passHash);
+                            FDR.ReqPasswordHash = passString;
+                        }
+                    }
                     FileDownloadConnection fdc = new FileDownloadConnection((FileData)item.Tag);
                     bool connected = await fdc.Connect(IP, Port, null);
                     if (connected)
                     {
-                        await fdc.SendCMD(new FileDownloadRequest(((FileData)item.Tag).ID));
+                        await fdc.SendCMD(FDR);
                         while (!fdc.ClientCTS.IsCancellationRequested)
                         {
                             await fdc.ReceiveData();

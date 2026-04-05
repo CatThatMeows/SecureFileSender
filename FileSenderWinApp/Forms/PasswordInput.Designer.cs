@@ -34,23 +34,25 @@
             PasswordConfirmInputFormTB = new TextBox();
             PasswordLabel = new Label();
             ConfirmPasswordLabel = new Label();
-            label1 = new Label();
+            MsgLabel = new Label();
             SuspendLayout();
             // 
             // PasswordInputFormTB
             // 
-            PasswordInputFormTB.Location = new Point(81, 96);
+            PasswordInputFormTB.Location = new Point(125, 112);
+            PasswordInputFormTB.Margin = new Padding(3, 4, 3, 4);
             PasswordInputFormTB.Name = "PasswordInputFormTB";
-            PasswordInputFormTB.Size = new Size(322, 23);
+            PasswordInputFormTB.Size = new Size(367, 27);
             PasswordInputFormTB.TabIndex = 0;
             PasswordInputFormTB.UseSystemPasswordChar = true;
             // 
             // PasswordInputFormSubmitBTN
             // 
             PasswordInputFormSubmitBTN.DialogResult = DialogResult.OK;
-            PasswordInputFormSubmitBTN.Location = new Point(147, 233);
+            PasswordInputFormSubmitBTN.Location = new Point(200, 295);
+            PasswordInputFormSubmitBTN.Margin = new Padding(3, 4, 3, 4);
             PasswordInputFormSubmitBTN.Name = "PasswordInputFormSubmitBTN";
-            PasswordInputFormSubmitBTN.Size = new Size(75, 23);
+            PasswordInputFormSubmitBTN.Size = new Size(86, 31);
             PasswordInputFormSubmitBTN.TabIndex = 1;
             PasswordInputFormSubmitBTN.Text = "Submit";
             PasswordInputFormSubmitBTN.UseVisualStyleBackColor = true;
@@ -58,62 +60,65 @@
             // PasswordInputCancelSubmitBTN
             // 
             PasswordInputCancelSubmitBTN.DialogResult = DialogResult.Cancel;
-            PasswordInputCancelSubmitBTN.Location = new Point(272, 233);
+            PasswordInputCancelSubmitBTN.Location = new Point(343, 295);
+            PasswordInputCancelSubmitBTN.Margin = new Padding(3, 4, 3, 4);
             PasswordInputCancelSubmitBTN.Name = "PasswordInputCancelSubmitBTN";
-            PasswordInputCancelSubmitBTN.Size = new Size(75, 23);
+            PasswordInputCancelSubmitBTN.Size = new Size(86, 31);
             PasswordInputCancelSubmitBTN.TabIndex = 2;
             PasswordInputCancelSubmitBTN.Text = "Cancel";
             PasswordInputCancelSubmitBTN.UseVisualStyleBackColor = true;
             // 
             // PasswordConfirmInputFormTB
             // 
-            PasswordConfirmInputFormTB.Location = new Point(81, 163);
+            PasswordConfirmInputFormTB.Location = new Point(125, 201);
+            PasswordConfirmInputFormTB.Margin = new Padding(3, 4, 3, 4);
             PasswordConfirmInputFormTB.Name = "PasswordConfirmInputFormTB";
-            PasswordConfirmInputFormTB.Size = new Size(322, 23);
+            PasswordConfirmInputFormTB.Size = new Size(367, 27);
             PasswordConfirmInputFormTB.TabIndex = 3;
             PasswordConfirmInputFormTB.UseSystemPasswordChar = true;
             // 
             // PasswordLabel
             // 
             PasswordLabel.AutoSize = true;
-            PasswordLabel.Location = new Point(213, 78);
+            PasswordLabel.Location = new Point(275, 88);
             PasswordLabel.Name = "PasswordLabel";
-            PasswordLabel.Size = new Size(57, 15);
+            PasswordLabel.Size = new Size(70, 20);
             PasswordLabel.TabIndex = 4;
             PasswordLabel.Text = "Password";
             // 
             // ConfirmPasswordLabel
             // 
             ConfirmPasswordLabel.AutoSize = true;
-            ConfirmPasswordLabel.Location = new Point(191, 145);
+            ConfirmPasswordLabel.Location = new Point(250, 177);
             ConfirmPasswordLabel.Name = "ConfirmPasswordLabel";
-            ConfirmPasswordLabel.Size = new Size(104, 15);
+            ConfirmPasswordLabel.Size = new Size(127, 20);
             ConfirmPasswordLabel.TabIndex = 5;
             ConfirmPasswordLabel.Text = "Confirm Password";
             // 
-            // label1
+            // MsgLabel
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(25, 21);
-            label1.Name = "label1";
-            label1.Size = new Size(438, 15);
-            label1.TabIndex = 6;
-            label1.Text = "You will need this password to import the certificate each time you start the server";
+            MsgLabel.AutoSize = true;
+            MsgLabel.Location = new Point(12, 27);
+            MsgLabel.Name = "MsgLabel";
+            MsgLabel.Size = new Size(0, 20);
+            MsgLabel.TabIndex = 6;
+            MsgLabel.TextAlign = ContentAlignment.TopCenter;
             // 
             // PasswordInput
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(484, 281);
-            Controls.Add(label1);
+            ClientSize = new Size(622, 433);
+            Controls.Add(MsgLabel);
             Controls.Add(ConfirmPasswordLabel);
             Controls.Add(PasswordLabel);
             Controls.Add(PasswordConfirmInputFormTB);
             Controls.Add(PasswordInputCancelSubmitBTN);
             Controls.Add(PasswordInputFormSubmitBTN);
             Controls.Add(PasswordInputFormTB);
-            MaximumSize = new Size(500, 320);
-            MinimumSize = new Size(500, 320);
+            Margin = new Padding(3, 4, 3, 4);
+            MaximumSize = new Size(640, 480);
+            MinimumSize = new Size(640, 480);
             Name = "PasswordInput";
             ResumeLayout(false);
             PerformLayout();
@@ -124,7 +129,7 @@
         private Button PasswordInputFormSubmitBTN;
         private Button PasswordInputCancelSubmitBTN;
         public TextBox PasswordConfirmInputFormTB;
-        private Label label1;
+        private Label MsgLabel;
         public Label PasswordLabel;
         public Label ConfirmPasswordLabel;
     }

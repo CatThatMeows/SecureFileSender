@@ -39,9 +39,7 @@ namespace FileSenderWinApp.Forms.Server
 
         private void CertificateImportLabel_Click(object sender, EventArgs e)
         {
-            PasswordInput PIF = new PasswordInput();
-            PIF.PasswordConfirmInputFormTB.Visible = false;
-            PIF.ConfirmPasswordLabel.Visible = false;
+            PasswordInput PIF = new PasswordInput("Input the password to import the certificate", false);
             bool result = false;
             if (PIF.ShowDialog() == DialogResult.OK)
             {
@@ -53,6 +51,10 @@ namespace FileSenderWinApp.Forms.Server
                     if (opf.ShowDialog() == DialogResult.OK)
                     {
                         result = CoreSettings.CS.ImportCertificate(PIF.PasswordInputFormTB.Text, opf.FileName);
+                        if (!result)
+                        {
+                            MessageBox.Show("Error during import");
+                        }
                     }
                 }
             }
@@ -75,7 +77,7 @@ namespace FileSenderWinApp.Forms.Server
 
         private void CreateCertificateBTN_Click(object sender, EventArgs e)
         {
-            PasswordInput PIF = new PasswordInput();
+            PasswordInput PIF = new PasswordInput("You will need this password to import the certificate each time you start the server", true);
             if(PIF.ShowDialog() == DialogResult.OK)
             {
                 if (PIF.PasswordInputFormTB.Text == PIF.PasswordConfirmInputFormTB.Text)

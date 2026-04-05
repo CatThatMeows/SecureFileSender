@@ -1,14 +1,10 @@
 ﻿using FileSender.Core.Client;
 using FileSender.Core.Network;
-using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSenderWinApp.Forms;
 using FileSenderWinApp.Forms.Client;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Text.Unicode;
 
 namespace FileSenderWinApp.Network
 {

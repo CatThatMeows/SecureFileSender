@@ -1,5 +1,7 @@
 ﻿using FileSender.Core.Packets;
 using FileSender.Core.Tools;
+using FileSender.Core.UI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +9,7 @@ using System.IO.Compression;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FileSender.Core.Network
 {
@@ -114,7 +117,19 @@ namespace FileSender.Core.Network
             //TEST
             try
             {
-                byte[] compressedPacketBytes = await GZip.CompressData(packet.Serialize(), CT);
+                byte[] compressedPacketBytes;
+                if (packet.PacketType == PacketType.FileListPacket)
+                {
+                    JsonSerializerSettings settings = new JsonSerializerSettings()
+                    {
+                        ContractResolver = new ConditionalPropertiesResolver(false),
+                        Formatting = Formatting.Indented
+                    };
+                    string data = JsonConvert.SerializeObject((FileListPacket)packet, settings);
+                    compressedPacketBytes = await GZip.CompressData(UTF8Encoding.UTF8.GetBytes(data), CT);
+                }
+                else
+                  compressedPacketBytes = await GZip.CompressData(packet.Serialize(), CT);
                 byte[] packetType = new byte[1];
                 packetType[0] = (byte)packet.PacketType;
                 await SSLStream.WriteAsync(BitConverter.GetBytes(compressedPacketBytes.LongLength), CT);

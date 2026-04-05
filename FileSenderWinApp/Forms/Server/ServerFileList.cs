@@ -22,12 +22,13 @@ namespace FileSenderWinApp.Forms.Server
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog opf = new OpenFileDialog()) {
+            using (OpenFileDialog opf = new OpenFileDialog())
+            {
                 opf.Multiselect = true;
-                
-                if(opf.ShowDialog() == DialogResult.OK)
+
+                if (opf.ShowDialog() == DialogResult.OK)
                 {
-                    foreach(string file in opf.FileNames)
+                    foreach (string file in opf.FileNames)
                     {
                         FileInfo info = new FileInfo(file);
                         FileData data = new FileData()
@@ -46,7 +47,7 @@ namespace FileSenderWinApp.Forms.Server
         }
         public void AddFromList()
         {
-            foreach(FileData data in FileData.ServerFiles)
+            foreach (FileData data in FileData.ServerFiles)
             {
                 AddToList(data);
             }
@@ -57,8 +58,25 @@ namespace FileSenderWinApp.Forms.Server
             ListViewItem item = new ListViewItem(data.FileName);
             item.SubItems.Add((data.FileSize / 1024).ToString() + "kb");
             item.SubItems.Add(data.FileLocation);
+            item.Tag = data;
 
             ServerFileListLV.Items.Add(item);
+        }
+
+        private void setPasswordForFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PasswordInput PIF = new PasswordInput("Input a password to set for the selected file(s)", false);
+            if (PIF.ShowDialog() == DialogResult.OK)
+            {
+                foreach (ListViewItem item in ServerFileListLV.SelectedItems)
+                {
+                    if (PIF.PasswordInputFormTB.Text == PIF.PasswordConfirmInputFormTB.Text)
+                    {
+                        ((FileData)item.Tag).SetPassword(PIF.PasswordInputFormTB.Text);
+                        FileData.WriteToFile();
+                    }
+                }
+            }
         }
     }
 }
