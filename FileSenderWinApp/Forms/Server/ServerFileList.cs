@@ -63,7 +63,7 @@ namespace FileSenderWinApp.Forms.Server
 
         private void setPasswordForFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PasswordInput PIF = new PasswordInput("Input a password to set for the selected file(s)", false);
+            PasswordInput PIF = new PasswordInput("Input a password to set for the selected file(s)", true);
             if (PIF.ShowDialog() == DialogResult.OK)
             {
                 foreach (ListViewItem item in ServerFileListLV.SelectedItems)

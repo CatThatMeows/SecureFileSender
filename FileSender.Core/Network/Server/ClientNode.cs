@@ -59,9 +59,6 @@ namespace FileSender.Core.Network.Server
                 {
                     await gz.WriteAsync(sendBuffer, 0, bytesRead, CTS.Token);
                 }
-
-                await gz.FlushAsync();
-                gz.Close();
             }
         }
     }

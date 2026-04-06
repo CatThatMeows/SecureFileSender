@@ -73,7 +73,6 @@ namespace FileSender.Core.Network.Client
             while (!CTS.IsCancellationRequested)
             {
                 int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token);
-                BytesToReceiveFull -= read;
                 if (read > 0)
                 {
                     await FS.WriteAsync(Buffer, 0, read, CTS.Token);
@@ -82,8 +81,8 @@ namespace FileSender.Core.Network.Client
                 {
                     break;
                 }
-
-                if (BytesToReceiveFull == 0)
+                
+                if (BytesToReceiveFull == FS.Position)
                     break;
             }
 

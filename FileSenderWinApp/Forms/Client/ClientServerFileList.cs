@@ -57,8 +57,8 @@ namespace FileSenderWinApp.Forms.Client
                     bool connected = await fdc.Connect(IP, Port, null);
                     if (connected)
                     {
-                        await fdc.SendCMD(FDR);
-                        await fdc.ReceiveData();
+                        if (await fdc.SendCMD(FDR))
+                            await fdc.ReceiveData();
                     }
                 }
             }
