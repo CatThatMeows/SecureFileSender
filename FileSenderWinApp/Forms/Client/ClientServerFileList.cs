@@ -58,10 +58,7 @@ namespace FileSenderWinApp.Forms.Client
                     if (connected)
                     {
                         await fdc.SendCMD(FDR);
-                        while (!fdc.ClientCTS.IsCancellationRequested)
-                        {
-                            await fdc.ReceiveData();
-                        }
+                        await fdc.ReceiveData();
                     }
                 }
             }

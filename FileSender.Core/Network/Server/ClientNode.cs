@@ -18,14 +18,15 @@ namespace FileSender.Core.Network.Server
     {
         public string IP { get; set; }
         public Guid FullID { get; set; }
-        CancellationToken CT { get; set; }
+        CancellationTokenSource CTSServer { get; set; }
+        CancellationTokenSource CTSConnectionSpecific { get; set; } = new CancellationTokenSource();
 
         public async Task<ClientNode> CreateNode(Socket clientSocket, PacketHandler packetHandler, CancellationTokenSource serverCTS)
         {
             ClientSocket = clientSocket;
             IsServer = true;
-            CTS = new CancellationTokenSource();
-            CT = serverCTS.Token;
+            CTSServer = serverCTS;
+            CTS = CancellationTokenSource.CreateLinkedTokenSource(CTSServer.Token, CTSConnectionSpecific.Token);
             IP = clientSocket.RemoteEndPoint.ToString();
             this.PacketHandler = packetHandler;
 
@@ -54,7 +55,7 @@ namespace FileSender.Core.Network.Server
                 byte[] sendBuffer = new byte[16384];
                 int bytesRead;
 
-                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0 && (!CTS.IsCancellationRequested && !CT.IsCancellationRequested))
+                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0)
                 {
                     await gz.WriteAsync(sendBuffer, 0, bytesRead, CTS.Token);
                 }

@@ -19,3 +19,4 @@ MM.DD
 - Progress on passworded file downloads
 - Added more error checking, less unnecessary crashes
 - Some disconnect fixes
+- Broken code fixes

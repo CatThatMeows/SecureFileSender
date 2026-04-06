@@ -58,15 +58,23 @@ namespace FileSender.Core.Network
                     BytesToReceive = 16384;
                 BufferIndex = 0;
 
-                await ReceiveCMD();
+                if(!await ReceiveCMD())
+                {
+                    await Disconnect();
+                }
             }
         }
 
-        private async Task ReceiveCMD()
+        private async Task<bool> ReceiveCMD()
         {
             while (!CTS.IsCancellationRequested)
             {
                 int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CTS.Token);
+                if(read == 0)
+                {
+                    return false;
+                }
+
                 BytesToReceiveFull -= read;
                 BytesToReceive -= read;
                 BufferIndex += read;
@@ -82,7 +90,10 @@ namespace FileSender.Core.Network
             {
                 ArraySegment<byte> segment = new ArraySegment<byte>(Buffer, 0, (int)BytesToReceiveFullND);
                 await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CTS.Token));
+                return true;
             }
+            else
+                return false;
         }
 
         private async Task<long> ReceiveHeader()
@@ -95,7 +106,6 @@ namespace FileSender.Core.Network
                 int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CTS.Token);
                 if(read == 0)
                 {
-                    await Disconnect();
                     return -1;
                 }
 
