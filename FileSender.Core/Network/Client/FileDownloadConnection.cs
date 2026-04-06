@@ -69,21 +69,26 @@ namespace FileSender.Core.Network.Client
 
         public async Task ReceiveData()
         {
-            using GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true);
-            while (!CTS.IsCancellationRequested)
+            long bytesWritten = 0;
+            using (GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true))
             {
-                int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token);
-                if (read > 0)
+                int read;
+                while ((read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token)) > 0 && !CTS.IsCancellationRequested)
                 {
-                    await FS.WriteAsync(Buffer, 0, read, CTS.Token);
+                    bytesWritten += read;
+                    if (read > 0)
+                    {
+                        await FS.WriteAsync(Buffer, 0, read, CTS.Token);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    if (BytesToReceiveFull == bytesWritten)
+                        break;
                 }
-                else
-                {
-                    break;
-                }
-                
-                if (BytesToReceiveFull == FS.Position)
-                    break;
+                await SSLStream.FlushAsync();
             }
 
             FS.Close();

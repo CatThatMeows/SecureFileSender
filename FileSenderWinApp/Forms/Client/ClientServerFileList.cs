@@ -37,11 +37,9 @@ namespace FileSenderWinApp.Forms.Client
 
         private async void downloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach(ListViewItem item in ClientServerFileListLV.Items)
+            foreach(ListViewItem item in ClientServerFileListLV.SelectedItems)
             {
                 string password = String.Empty;
-                if (item.Selected)
-                {
                     FileDownloadRequest FDR = new FileDownloadRequest(((FileData)item.Tag).ID);
                     if (((FileData)item.Tag).IsPassworded)
                     {
@@ -61,7 +59,6 @@ namespace FileSenderWinApp.Forms.Client
                             await fdc.ReceiveData();
                     }
                 }
-            }
         }
         private void HideForm(object sender, FormClosingEventArgs e)
         {
