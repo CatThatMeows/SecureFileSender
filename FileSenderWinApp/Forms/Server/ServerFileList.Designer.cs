@@ -31,20 +31,21 @@
             components = new System.ComponentModel.Container();
             ServerFileListCMS = new ContextMenuStrip(components);
             addToolStripMenuItem = new ToolStripMenuItem();
+            setPasswordForFilesToolStripMenuItem = new ToolStripMenuItem();
             ServerFileListLV = new ListView();
             FileNameCol = new ColumnHeader();
             FileSizeCol = new ColumnHeader();
             FileLocationCol = new ColumnHeader();
-            setPasswordForFilesToolStripMenuItem = new ToolStripMenuItem();
+            removeToolStripMenuItem = new ToolStripMenuItem();
             ServerFileListCMS.SuspendLayout();
             SuspendLayout();
             // 
             // ServerFileListCMS
             // 
             ServerFileListCMS.ImageScalingSize = new Size(20, 20);
-            ServerFileListCMS.Items.AddRange(new ToolStripItem[] { addToolStripMenuItem, setPasswordForFilesToolStripMenuItem });
+            ServerFileListCMS.Items.AddRange(new ToolStripItem[] { addToolStripMenuItem, removeToolStripMenuItem, setPasswordForFilesToolStripMenuItem });
             ServerFileListCMS.Name = "contextMenuStrip1";
-            ServerFileListCMS.Size = new Size(231, 80);
+            ServerFileListCMS.Size = new Size(231, 104);
             // 
             // addToolStripMenuItem
             // 
@@ -52,6 +53,13 @@
             addToolStripMenuItem.Size = new Size(230, 24);
             addToolStripMenuItem.Text = "Add";
             addToolStripMenuItem.Click += addToolStripMenuItem_Click;
+            // 
+            // setPasswordForFilesToolStripMenuItem
+            // 
+            setPasswordForFilesToolStripMenuItem.Name = "setPasswordForFilesToolStripMenuItem";
+            setPasswordForFilesToolStripMenuItem.Size = new Size(230, 24);
+            setPasswordForFilesToolStripMenuItem.Text = "Set password for file(s)";
+            setPasswordForFilesToolStripMenuItem.Click += setPasswordForFilesToolStripMenuItem_Click;
             // 
             // ServerFileListLV
             // 
@@ -83,12 +91,12 @@
             FileLocationCol.TextAlign = HorizontalAlignment.Center;
             FileLocationCol.Width = 600;
             // 
-            // setPasswordForFilesToolStripMenuItem
+            // removeToolStripMenuItem
             // 
-            setPasswordForFilesToolStripMenuItem.Name = "setPasswordForFilesToolStripMenuItem";
-            setPasswordForFilesToolStripMenuItem.Size = new Size(230, 24);
-            setPasswordForFilesToolStripMenuItem.Text = "Set password for file(s)";
-            setPasswordForFilesToolStripMenuItem.Click += setPasswordForFilesToolStripMenuItem_Click;
+            removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            removeToolStripMenuItem.Size = new Size(230, 24);
+            removeToolStripMenuItem.Text = "Remove";
+            removeToolStripMenuItem.Click += removeToolStripMenuItem_Click;
             // 
             // ServerFileList
             // 
@@ -112,5 +120,6 @@
         private ColumnHeader FileSizeCol;
         private ColumnHeader FileLocationCol;
         private ToolStripMenuItem setPasswordForFilesToolStripMenuItem;
+        private ToolStripMenuItem removeToolStripMenuItem;
     }
 }

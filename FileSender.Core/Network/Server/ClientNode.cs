@@ -43,10 +43,7 @@ namespace FileSender.Core.Network.Server
         }
         public async Task HandleClient()
         {
-            while (!CTS.IsCancellationRequested && !CT.IsCancellationRequested)
-            {
-                await ReceiveData();
-            }
+            _ = ReceiveData();
         }
 
         public async Task SendFile(FileData file)
@@ -57,7 +54,7 @@ namespace FileSender.Core.Network.Server
                 byte[] sendBuffer = new byte[16384];
                 int bytesRead;
 
-                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0 && (!CT.IsCancellationRequested && !CTS.IsCancellationRequested))
+                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0 && (!CTS.IsCancellationRequested && !CT.IsCancellationRequested))
                 {
                     await gz.WriteAsync(sendBuffer, 0, bytesRead, CTS.Token);
                 }

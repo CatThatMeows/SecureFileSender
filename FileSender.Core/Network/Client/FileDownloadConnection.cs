@@ -1,18 +1,10 @@
-﻿using FileSender.Core.Client;
-using FileSender.Core.Packets;
-using FileSender.Core.Tools;
-using FileSender.Core.UI;
-using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
+﻿using FileSender.Core.UI;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace FileSender.Core.Network.Client
 {
@@ -39,7 +31,6 @@ namespace FileSender.Core.Network.Client
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
-            this.CTS = ClientCTS;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 ReceiveBufferSize = ChunkSize,

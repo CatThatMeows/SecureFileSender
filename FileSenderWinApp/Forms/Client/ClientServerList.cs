@@ -2,15 +2,6 @@
 using FileSender.Core.Network;
 using FileSender.Core.Network.Client;
 using FileSender.Core.Packets;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FileSenderWinApp.Forms.Client
 {
@@ -38,17 +29,15 @@ namespace FileSenderWinApp.Forms.Client
                 if (connected)
                 {
                     AddServer(con);
-                    while (!con.CTS.IsCancellationRequested)
-                    {
-                        await con.ReceiveData();
-                    }
+                    _ = con.ReceiveData();
                 }
             }
         }
         private async void AddServer(Connection conn)
         {
             bool result = await conn.SendCMD(new AuthPacket());
-            if (result) {
+            if (result)
+            {
                 ListViewItem LVI = new ListViewItem(conn.RemoteIP);
                 ClientServerListLV.Items.Add(LVI);
                 LVI.Tag = conn;
@@ -58,18 +47,24 @@ namespace FileSenderWinApp.Forms.Client
 
         private async void openFileListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach(ListViewItem item in ClientServerListLV.Items)
+            foreach (ListViewItem item in ClientServerListLV.SelectedItems)
             {
-                if (item.Selected)
-                {
-                    ((ClientServerFileList)FormHandler.ClientServerFileList).ClientServerFileListLV.Items.Clear();
+                ((ClientServerFileList)FormHandler.ClientServerFileList).ClientServerFileListLV.Items.Clear();
 
-                    await ((Connection)item.Tag).SendCMD(new FileListPacketRequest());
-                    ((ClientServerFileList)FormHandler.ClientServerFileList).IP = ((Connection)item.Tag).RemoteIP;
-                    ((ClientServerFileList)FormHandler.ClientServerFileList).Port = ((Connection)item.Tag).Port;
+                await ((Connection)item.Tag).SendCMD(new FileListPacketRequest());
+                ((ClientServerFileList)FormHandler.ClientServerFileList).IP = ((Connection)item.Tag).RemoteIP;
+                ((ClientServerFileList)FormHandler.ClientServerFileList).Port = ((Connection)item.Tag).Port;
 
-                    FormHandler.ClientServerFileList.Show();
-                }
+                FormHandler.ClientServerFileList.Show();
+            }
+        }
+
+        private async void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem LVI in ClientServerListLV.SelectedItems)
+            {
+                await ((Connection)LVI.Tag).Disconnect();
+                LVI.Remove();
             }
         }
     }

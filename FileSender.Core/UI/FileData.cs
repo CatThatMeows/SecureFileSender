@@ -15,6 +15,11 @@ namespace FileSender.Core.UI
             WriteToFile();
         }
 
+        public static void RemoveFromServerFiles(FileData data)
+        {
+            ServerFiles.Remove(data);
+            WriteToFile();
+        }
         public static void WriteToFile()
         {
             File.WriteAllText

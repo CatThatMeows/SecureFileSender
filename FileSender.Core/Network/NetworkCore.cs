@@ -78,8 +78,11 @@ namespace FileSender.Core.Network
                 //ToDo: Handle 16kb+ commands, in case file list is long af
             }
 
-            ArraySegment<byte> segment = new ArraySegment<byte>(Buffer, 0, (int)BytesToReceiveFullND);
-            await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CTS.Token));
+            if (!CTS.IsCancellationRequested)
+            {
+                ArraySegment<byte> segment = new ArraySegment<byte>(Buffer, 0, (int)BytesToReceiveFullND);
+                await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CTS.Token));
+            }
         }
 
         private async Task<long> ReceiveHeader()
@@ -90,6 +93,11 @@ namespace FileSender.Core.Network
             while (!CTS.IsCancellationRequested)
             {
                 int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CTS.Token);
+                if(read == 0)
+                {
+                    await Disconnect();
+                    return -1;
+                }
 
                 BufferIndex += read;
                 BytesToReceiveFull -= read;
@@ -114,7 +122,7 @@ namespace FileSender.Core.Network
         }
         public async Task<bool> SendCMD(Packet packet)
         {
-            //TEST
+            //This will stay because.
             try
             {
                 byte[] compressedPacketBytes;
@@ -149,12 +157,17 @@ namespace FileSender.Core.Network
         {
             try
             {
-                await CTS.CancelAsync();
-                SSLStream.Close();
-                ClientSocket.Shutdown(SocketShutdown.Both);
-                ClientSocket.Close();
-                ClientSocket.Dispose();
-            }catch { }
+                if(!CTS.IsCancellationRequested)
+                    await CTS.CancelAsync();
+                if (ClientSocket.Connected)
+                {
+                    SSLStream.Close();
+                    ClientSocket.Shutdown(SocketShutdown.Both);
+                    ClientSocket.Close();
+                    ClientSocket.Dispose();
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
         }
     }
 }

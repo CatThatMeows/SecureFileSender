@@ -47,7 +47,7 @@ namespace FileSenderWinApp.Network
                             {
                                 //Disconnect
                                 await con.Disconnect();
-
+                                return;
                             }
                         }
                         else

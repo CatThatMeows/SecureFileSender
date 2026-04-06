@@ -1,16 +1,9 @@
 ﻿using FileSender.Core.Network;
-using FileSender.Core.Packets;
-using System;
-using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSender.Core.Client
 {
@@ -18,11 +11,11 @@ namespace FileSender.Core.Client
     {
         public string RemoteIP { get; private set; }
         public int Port { get; private set; }
-        CancellationTokenSource CTS { get; set; } = new CancellationTokenSource();
+        private CancellationTokenSource _CTS { get; set; } = new CancellationTokenSource();
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
-            base.CTS = CTS;
+            base.CTS = _CTS;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             RemoteIP = ip;
             Port = port;

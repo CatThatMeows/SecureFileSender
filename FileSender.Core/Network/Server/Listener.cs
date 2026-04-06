@@ -50,7 +50,6 @@ namespace FileSender.Core.Network.Server
                     Socket clientSocket = await ServerSocket.AcceptAsync(ServerCTS.Token);
 
                     ClientNode node = new ClientNode();
-                    CancellationTokenSource DataReceiveCTS = new CancellationTokenSource();
                     node = await node.CreateNode(clientSocket, packetHandler, ServerCTS);
 
                     if(node != null)
