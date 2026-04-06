@@ -24,6 +24,7 @@ namespace FileSender.Core.Network.Client
         public CancellationTokenSource ClientCTS { get; set; } = new CancellationTokenSource();
         public FileDownloadConnection(FileData file)
         {
+            CTS = ClientCTS;
             File = file;
             IsServer = false;
             BytesToReceiveFull = File.FileSize;
@@ -38,7 +39,7 @@ namespace FileSender.Core.Network.Client
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
-            this.CT = ClientCTS.Token;
+            this.CTS = ClientCTS;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 ReceiveBufferSize = ChunkSize,
@@ -78,13 +79,13 @@ namespace FileSender.Core.Network.Client
         public async Task ReceiveData()
         {
             using GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true);
-            while (!CT.IsCancellationRequested)
+            while (!CTS.IsCancellationRequested)
             {
-                int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CT);
+                int read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token);
                 BytesToReceiveFull -= read;
                 if (read > 0)
                 {
-                    await FS.WriteAsync(Buffer, 0, read, CT);
+                    await FS.WriteAsync(Buffer, 0, read, CTS.Token);
                 }
                 else
                 {

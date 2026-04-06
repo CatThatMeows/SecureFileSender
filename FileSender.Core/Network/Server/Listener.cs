@@ -31,7 +31,7 @@ namespace FileSender.Core.Network.Server
 
             IsAwaitingReset = false;
 
-            await Listen(ServerCTS.Token, packetHandler);
+            await Listen(packetHandler);
         }
 
         public async Task Stop()
@@ -41,16 +41,17 @@ namespace FileSender.Core.Network.Server
             IsAwaitingReset = true;
         }
 
-        private async Task Listen(CancellationToken ct, PacketHandler packetHandler)
+        private async Task Listen(PacketHandler packetHandler)
         {
-            while (!ct.IsCancellationRequested)
+            while (!ServerCTS.IsCancellationRequested)
             {
                 try
                 {
-                    Socket clientSocket = await ServerSocket.AcceptAsync(ct);
+                    Socket clientSocket = await ServerSocket.AcceptAsync(ServerCTS.Token);
 
                     ClientNode node = new ClientNode();
-                    node = await node.CreateNode(clientSocket, packetHandler, ct);
+                    CancellationTokenSource DataReceiveCTS = new CancellationTokenSource();
+                    node = await node.CreateNode(clientSocket, packetHandler, ServerCTS);
 
                     if(node != null)
                     {

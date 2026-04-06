@@ -18,3 +18,4 @@ MM.DD
 03.30 - 04.6
 - Progress on passworded file downloads
 - Added more error checking, less unnecessary crashes
+- Some disconnect fixes

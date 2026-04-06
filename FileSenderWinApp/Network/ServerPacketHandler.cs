@@ -1,15 +1,8 @@
-﻿using FileSender.Core.Client;
-using FileSender.Core.Network;
+﻿using FileSender.Core.Network;
 using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSender.Core.UI;
-using FileSenderWinApp.Forms;
-using FileSenderWinApp.Forms.Client;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace FileSenderWinApp.Network
@@ -22,7 +15,6 @@ namespace FileSenderWinApp.Network
             {
                 AuthPacket ap = JsonConvert.DeserializeObject<AuthPacket>(UTF8Encoding.UTF8.GetString(bytes));
                 ((ClientNode)con).FullID = ap.ID;
-               //await con.SendCMD(new FileListPacket());
             }
             else if(packetType == PacketType.FileListPacketRequest)
             {
@@ -43,8 +35,8 @@ namespace FileSenderWinApp.Network
                             }
                             else
                             {
-                                //Send denied response
-                                //---
+                                //Disconnect
+                                await con.Disconnect();
 
                             }
                         }

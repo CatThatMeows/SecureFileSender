@@ -27,6 +27,12 @@ namespace FileSenderWinApp.Forms.Client
             ClientDirectConnect CDC = new ClientDirectConnect();
             if (CDC.ShowDialog() == DialogResult.OK)
             {
+                string ipport = CDC.IPPortTB.Text;
+                if (string.IsNullOrWhiteSpace(ipport) || ipport.Count(x => x == '.') != 3 || !ipport.Contains(':'))
+                {
+                    MessageBox.Show("Wrong input");
+                    return;
+                }
                 Connection con = new FileSender.Core.Client.Connection();
                 bool connected = await con.Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]), packetHandler);
                 if (connected)

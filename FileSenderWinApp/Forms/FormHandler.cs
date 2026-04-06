@@ -25,7 +25,7 @@ namespace FileSenderWinApp.Forms
             form.TopLevel = false;
             form.FormBorderStyle = FormBorderStyle.None;
             form.Dock = DockStyle.Fill;
-
+            
             Main.mainPanel.Controls.Add(form);
 
             form.Show();

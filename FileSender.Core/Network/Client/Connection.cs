@@ -22,7 +22,7 @@ namespace FileSender.Core.Client
 
         public async Task<bool> Connect(string ip, int port, PacketHandler packetHandler)
         {
-            base.CT = CTS.Token;
+            base.CTS = CTS;
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             RemoteIP = ip;
             Port = port;

@@ -16,16 +16,16 @@ namespace FileSender.Core.Network.Server
 {
     public class ClientNode : NetworkCore
     {
-        private CancellationToken ServerCT { get; set; }
         public string IP { get; set; }
         public Guid FullID { get; set; }
+        CancellationToken CT { get; set; }
 
-        public async Task<ClientNode> CreateNode(Socket clientSocket, PacketHandler packetHandler ,CancellationToken serverCT)
+        public async Task<ClientNode> CreateNode(Socket clientSocket, PacketHandler packetHandler, CancellationTokenSource serverCTS)
         {
             ClientSocket = clientSocket;
             IsServer = true;
-            ServerCT = serverCT;
-            CT = ServerCT;
+            CTS = new CancellationTokenSource();
+            CT = serverCTS.Token;
             IP = clientSocket.RemoteEndPoint.ToString();
             this.PacketHandler = packetHandler;
 
@@ -43,7 +43,7 @@ namespace FileSender.Core.Network.Server
         }
         public async Task HandleClient()
         {
-            while (!ServerCT.IsCancellationRequested)
+            while (!CTS.IsCancellationRequested && !CT.IsCancellationRequested)
             {
                 await ReceiveData();
             }
@@ -57,9 +57,9 @@ namespace FileSender.Core.Network.Server
                 byte[] sendBuffer = new byte[16384];
                 int bytesRead;
 
-                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, ServerCT)) > 0)
+                while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0 && (!CT.IsCancellationRequested && !CTS.IsCancellationRequested))
                 {
-                    await gz.WriteAsync(sendBuffer, 0, bytesRead, ServerCT);
+                    await gz.WriteAsync(sendBuffer, 0, bytesRead, CTS.Token);
                 }
 
                 await gz.FlushAsync();

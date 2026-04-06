@@ -33,7 +33,7 @@ namespace FileSender.Core.Network
 
         internal byte PacketRead { get; set; }
 
-        public CancellationToken CT { get; set; }
+        public CancellationTokenSource CTS { get; set; }
         public PacketHandler PacketHandler { get; set; }
         public bool IsServer { get; set; }
         public bool IsConnected 
@@ -46,10 +46,10 @@ namespace FileSender.Core.Network
 
         public async Task ReceiveData()
         {
-            while (!CT.IsCancellationRequested)
+            while (!CTS.IsCancellationRequested)
             {
                 long bytesToReceive = await ReceiveHeader();
-                if(bytesToReceive == -1) { return; } //Change to disconnect properly later
+                if(bytesToReceive == -1) { await Disconnect(); }
                 BytesToReceiveFull = bytesToReceive;
                 BytesToReceiveFullND = bytesToReceive;
                 if (BytesToReceiveFull <= 16384)
@@ -64,9 +64,9 @@ namespace FileSender.Core.Network
 
         private async Task ReceiveCMD()
         {
-            while (!CT.IsCancellationRequested)
+            while (!CTS.IsCancellationRequested)
             {
-                int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CT);
+                int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CTS.Token);
                 BytesToReceiveFull -= read;
                 BytesToReceive -= read;
                 BufferIndex += read;
@@ -79,7 +79,7 @@ namespace FileSender.Core.Network
             }
 
             ArraySegment<byte> segment = new ArraySegment<byte>(Buffer, 0, (int)BytesToReceiveFullND);
-            await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CT));
+            await PacketHandler.Handle(this, (PacketType)PacketRead, await GZip.DecompressData(segment, CTS.Token));
         }
 
         private async Task<long> ReceiveHeader()
@@ -87,9 +87,9 @@ namespace FileSender.Core.Network
             BufferIndex = 0;
             BytesToReceive = 9; BytesToReceiveFull = 9; BytesToReceiveFullND = 9;
 
-            while (!CT.IsCancellationRequested)
+            while (!CTS.IsCancellationRequested)
             {
-                int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CT);
+                int read = await SSLStream.ReadAsync(Buffer, BufferIndex, BytesToReceive, CTS.Token);
 
                 BufferIndex += read;
                 BytesToReceiveFull -= read;
@@ -126,24 +126,35 @@ namespace FileSender.Core.Network
                         Formatting = Formatting.Indented
                     };
                     string data = JsonConvert.SerializeObject((FileListPacket)packet, settings);
-                    compressedPacketBytes = await GZip.CompressData(UTF8Encoding.UTF8.GetBytes(data), CT);
+                    compressedPacketBytes = await GZip.CompressData(UTF8Encoding.UTF8.GetBytes(data), CTS.Token);
                 }
                 else
-                  compressedPacketBytes = await GZip.CompressData(packet.Serialize(), CT);
-                byte[] packetType = new byte[1];
-                packetType[0] = (byte)packet.PacketType;
-                await SSLStream.WriteAsync(BitConverter.GetBytes(compressedPacketBytes.LongLength), CT);
-                await SSLStream.WriteAsync(packetType, CT);
-                await SSLStream.WriteAsync(compressedPacketBytes, CT);
+                  compressedPacketBytes = await GZip.CompressData(packet.Serialize(), CTS.Token);
+                byte[] packetType = new byte[1] { (byte)packet.PacketType };
+                await SSLStream.WriteAsync(BitConverter.GetBytes(compressedPacketBytes.LongLength), CTS.Token);
+                await SSLStream.WriteAsync(packetType, CTS.Token);
+                await SSLStream.WriteAsync(compressedPacketBytes, CTS.Token);
             }
             catch (Exception ex)
             {
                 //Disconnect
-                Debug.WriteLine(ex.Message);
+                await Disconnect();
                 return false;
             }
 
             return true;
+        }
+
+        public async Task Disconnect()
+        {
+            try
+            {
+                await CTS.CancelAsync();
+                SSLStream.Close();
+                ClientSocket.Shutdown(SocketShutdown.Both);
+                ClientSocket.Close();
+                ClientSocket.Dispose();
+            }catch { }
         }
     }
 }
