@@ -35,6 +35,7 @@ namespace FileSender.Core.Network
 
         public CancellationTokenSource CTS { get; set; }
         public PacketHandler PacketHandler { get; set; }
+        public EventHandler OnDisconnected { get; set; }
         public bool IsServer { get; set; }
         public bool IsConnected 
         { 
@@ -44,24 +45,33 @@ namespace FileSender.Core.Network
             } 
         }
 
-        public async Task ReceiveData()
+        public async Task<bool> ReceiveData()
         {
-            while (!CTS.IsCancellationRequested)
+            try
             {
-                long bytesToReceive = await ReceiveHeader();
-                if(bytesToReceive == -1) { await Disconnect(); }
-                BytesToReceiveFull = bytesToReceive;
-                BytesToReceiveFullND = bytesToReceive;
-                if (BytesToReceiveFull <= 16384)
-                    BytesToReceive = (int)bytesToReceive;
-                else
-                    BytesToReceive = 16384;
-                BufferIndex = 0;
-
-                if(!await ReceiveCMD())
+                while (!CTS.IsCancellationRequested)
                 {
-                    await Disconnect();
+                    long bytesToReceive = await ReceiveHeader();
+                    if (bytesToReceive == -1) { await Disconnect(); }
+                    BytesToReceiveFull = bytesToReceive;
+                    BytesToReceiveFullND = bytesToReceive;
+                    if (BytesToReceiveFull <= 16384)
+                        BytesToReceive = (int)bytesToReceive;
+                    else
+                        BytesToReceive = 16384;
+                    BufferIndex = 0;
+
+                    if (!await ReceiveCMD())
+                    {
+                        await Disconnect();
+                    }
                 }
+
+                return false;
+            }catch(Exception ex)
+            {
+                await Disconnect();
+                return false;
             }
         }
 
@@ -177,7 +187,12 @@ namespace FileSender.Core.Network
                     ClientSocket.Dispose();
                 }
             }
-            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            catch { }
+
+            if (OnDisconnected != null)
+            {
+                OnDisconnected?.Invoke(this, null);
+            }
         }
     }
 }

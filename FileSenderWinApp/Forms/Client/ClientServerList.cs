@@ -28,6 +28,7 @@ namespace FileSenderWinApp.Forms.Client
                 bool connected = await con.Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]), packetHandler);
                 if (connected)
                 {
+                    con.OnDisconnected += OnDisconnected;
                     AddServer(con);
                     _ = con.ReceiveData();
                 }
@@ -42,6 +43,17 @@ namespace FileSenderWinApp.Forms.Client
                 ClientServerListLV.Items.Add(LVI);
                 LVI.Tag = conn;
                 ServerHandler.SH.AddServer(conn);
+            }
+        }
+
+        private void OnDisconnected(object? sender, EventArgs e)
+        {
+            foreach (ListViewItem item in ClientServerListLV.Items)
+            {
+                if(item.Tag == (Connection)sender)
+                {
+                    item.Remove();
+                }
             }
         }
 
