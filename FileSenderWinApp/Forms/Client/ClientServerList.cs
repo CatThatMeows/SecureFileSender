@@ -38,7 +38,7 @@ namespace FileSenderWinApp.Forms.Client
                 if (connected)
                 {
                     AddServer(con);
-                    while (true)
+                    while (!con.CTS.IsCancellationRequested)
                     {
                         await con.ReceiveData();
                     }

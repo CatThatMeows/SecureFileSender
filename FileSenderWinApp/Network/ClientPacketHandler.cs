@@ -15,6 +15,11 @@ namespace FileSenderWinApp.Network
             if (packetType == PacketType.FileListPacket)
             {
                 FileListPacket packet = JsonConvert.DeserializeObject<FileListPacket>(UTF8Encoding.UTF8.GetString(bytes));
+                if(packet == null)
+                {
+                    await con.Disconnect();
+                    return;
+                }
                 ((ClientServerFileList)FormHandler.ClientServerFileList).AddFiles(packet.Files);
             }
             else

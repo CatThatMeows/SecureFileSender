@@ -14,6 +14,11 @@ namespace FileSenderWinApp.Network
             if(packetType == PacketType.AuthPacket)
             {
                 AuthPacket ap = JsonConvert.DeserializeObject<AuthPacket>(UTF8Encoding.UTF8.GetString(bytes));
+                if (ap == null)
+                {
+                    await con.Disconnect();
+                    return;
+                }
                 ((ClientNode)con).FullID = ap.ID;
             }
             else if(packetType == PacketType.FileListPacketRequest)
@@ -23,6 +28,11 @@ namespace FileSenderWinApp.Network
             else if(packetType == PacketType.FileDownloadRequest)
             {
                 FileDownloadRequest req = JsonConvert.DeserializeObject<FileDownloadRequest>(UTF8Encoding.UTF8.GetString(bytes));
+                if(req == null)
+                {
+                    await con.Disconnect();
+                    return;
+                }
                 for(int i = 0; i < FileData.ServerFiles.Count; i++)
                 {
                     if (FileData.ServerFiles[i].ID == req.FileID)

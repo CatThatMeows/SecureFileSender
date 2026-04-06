@@ -30,7 +30,7 @@ namespace FileSender.Core.Network.Client
                         for(byte i = 0; i < 255; i++)
                         {
                             ip[3] = i;
-
+                            SemaphoreSlim semaphore = new SemaphoreSlim(50);
 
                         }
                     }
