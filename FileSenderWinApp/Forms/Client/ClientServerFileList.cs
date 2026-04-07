@@ -39,25 +39,29 @@ namespace FileSenderWinApp.Forms.Client
         {
             foreach(ListViewItem item in ClientServerFileListLV.SelectedItems)
             {
-                string password = String.Empty;
-                    FileDownloadRequest FDR = new FileDownloadRequest(((FileData)item.Tag).ID);
-                    if (((FileData)item.Tag).IsPassworded)
-                    {
-                        PasswordInput PIF = new PasswordInput("This file is passworded. Input the password", false);
-                        if(PIF.ShowDialog() == DialogResult.OK)
+                _ = Task.Run(async () =>
+                {
+                        string password = String.Empty;
+                        FileDownloadRequest FDR = new FileDownloadRequest(((FileData)item.Tag).ID);
+                        if (((FileData)item.Tag).IsPassworded)
                         {
-                            byte[] passHash = SHA512.HashData(Encoding.UTF8.GetBytes(PIF.PasswordInputFormTB.Text));
-                            string passString = Convert.ToHexString(passHash);
-                            FDR.ReqPasswordHash = passString;
+                            PasswordInput PIF = new PasswordInput("This file is passworded. Input the password", false);
+                            if(PIF.ShowDialog() == DialogResult.OK)
+                            {
+                                byte[] passHash = SHA512.HashData(Encoding.UTF8.GetBytes(PIF.PasswordInputFormTB.Text));
+                                string passString = Convert.ToHexString(passHash);
+                                FDR.ReqPasswordHash = passString;
+                            }
                         }
-                    }
-                    FileDownloadConnection fdc = new FileDownloadConnection((FileData)item.Tag);
-                    bool connected = await fdc.Connect(IP, Port, null);
-                    if (connected)
-                    {
-                        if (await fdc.SendCMD(FDR))
-                            await fdc.ReceiveData();
-                    }
+                
+                        FileDownloadConnection fdc = new FileDownloadConnection((FileData)item.Tag);
+                        bool connected = await fdc.Connect(IP, Port, null);
+                        if (connected)
+                        {
+                            if (await fdc.SendCMD(FDR))
+                                await fdc.ReceiveData();
+                        }
+                    });
                 }
         }
         private void HideForm(object sender, FormClosingEventArgs e)

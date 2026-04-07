@@ -59,8 +59,8 @@ namespace FileSender.Core.Network.Server
                     while ((bytesRead = await fs.ReadAsync(sendBuffer, 0, sendBuffer.Length, CTS.Token)) > 0)
                     {
                         await gz.WriteAsync(sendBuffer, 0, bytesRead, CTS.Token);
-                        await gz.FlushAsync();
                     }
+                    await gz.FlushAsync();
                 }
 
                 await SSLStream.FlushAsync();
