@@ -1,0 +1,22 @@
+MM.DD
+03.09 - 03.15
+- Fixed network code error stopping data receive effectively after the first packet has been read
+- Changed double serialization to use a byte for packetType, then a singular serialization. (Saves 15-20% mem use)
+- Added PacketHandling
+- Client can download the filelist from the server
+- Progress on file download (mostly ready for basic use)
+- Refactored network code, other file structures
+
+03.15 - 03.30
+- File sending now works
+- Fixed file receive for large files
+- Fixed file receive for files below chunksize
+- Updated certificate loading
+- Added compression to packet sends, file sends
+- Simplified network code
+
+03.30 - 04.6
+- Progress on passworded file downloads
+- Added more error checking, less unnecessary crashes
+- Some disconnect fixes
+- Broken code fixes
