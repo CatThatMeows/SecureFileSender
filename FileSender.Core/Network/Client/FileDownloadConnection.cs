@@ -1,4 +1,5 @@
 ﻿using FileSender.Core.UI;
+using Org.BouncyCastle.Asn1.X509;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
@@ -20,10 +21,8 @@ namespace FileSender.Core.Network.Client
             File = file;
             IsServer = false;
             BytesToReceiveFull = File.FileSize;
-            BytesToReceive = ChunkSize;
             if(file.FileSize < ChunkSize)
             {
-                BytesToReceive = (int)file.FileSize;
                 BytesToReceiveFull = file.FileSize;
             }
             base.Buffer = new byte[ChunkSize];
@@ -69,29 +68,40 @@ namespace FileSender.Core.Network.Client
 
         public async Task ReceiveData()
         {
-            long bytesWritten = 0;
-            using (GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true))
+            try
             {
-                int read;
-                while ((read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token)) > 0 && !CTS.IsCancellationRequested)
+                long bytesWritten = 0;
+                using (GZipStream gzip = new GZipStream(SSLStream, CompressionMode.Decompress, leaveOpen: true))
                 {
-                    bytesWritten += read;
-                    if (read > 0)
+                    int read;
+                    while ((read = await gzip.ReadAsync(Buffer, 0, ChunkSize, CTS.Token)) > 0 && !CTS.IsCancellationRequested)
                     {
-                        await FS.WriteAsync(Buffer, 0, read, CTS.Token);
-                    }
-                    else
-                    {
-                        break;
-                    }
+                        bytesWritten += read;
+                        if (read > 0)
+                        {
+                            await FS.WriteAsync(Buffer, 0, read, CTS.Token);
+                        }
+                        else
+                        {
+                            break;
+                        }
 
-                    if (BytesToReceiveFull == bytesWritten)
-                        break;
+                        if (BytesToReceiveFull == bytesWritten)
+                            break;
+                    }
+                    await SSLStream.FlushAsync();
                 }
-                await SSLStream.FlushAsync();
             }
+            catch { } //Errors handled below anyway
 
             FS.Close();
+            string folder = ClientSocket.RemoteEndPoint.ToString().Split(':')[0];
+            FileInfo info = new FileInfo(folder + "\\" + File.FileName);
+            if(info.Exists && info.Length != File.FileSize)
+            {
+                //ToDo: display error back to GUI
+                System.IO.File.Delete(folder + "\\" + File.FileName);
+            }
             ClientCTS.Cancel();
         }
     }

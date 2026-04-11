@@ -1,12 +1,6 @@
 ﻿using FileSender.Core.Tools;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSender.Core
 {
@@ -73,6 +67,10 @@ namespace FileSender.Core
         private void CoreSettingsImport()
         {
             _CS = JsonConvert.DeserializeObject<CoreSettings>(File.ReadAllText("config.json"));
+            if(_CS == null)
+            {
+                _CS = new CoreSettings();
+            }
         }
         public void CoreInit()
         {
