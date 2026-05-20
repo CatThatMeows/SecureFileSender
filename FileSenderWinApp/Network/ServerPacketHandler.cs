@@ -3,6 +3,7 @@ using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSender.Core.UI;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Text;
 
 namespace FileSenderWinApp.Network
@@ -11,7 +12,8 @@ namespace FileSenderWinApp.Network
     {
         public async Task Handle(NetworkCore con, PacketType packetType, ArraySegment<byte> bytes)
         {
-            if(packetType == PacketType.AuthPacket)
+            Debug.WriteLine(UTF8Encoding.UTF8.GetString(bytes)); //DEBUG
+            if (packetType == PacketType.AuthPacket)
             {
                 AuthPacket ap = JsonConvert.DeserializeObject<AuthPacket>(UTF8Encoding.UTF8.GetString(bytes));
                 if (ap == null)
