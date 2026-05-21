@@ -1,23 +1,16 @@
 ﻿using FileSender.Core.Packets;
 using FileSender.Core.Tools;
-using FileSender.Core.UI;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.Compression;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json.Serialization;
+
 
 namespace FileSender.Core.Network
 {
     public class NetworkCore
     {
         internal Socket ClientSocket { get; set; }
-        internal SslStream SSLStream { get; set; }
-
         internal const int HeaderSize = 9;
 
         internal int BufferIndex = 0;
@@ -34,6 +27,7 @@ namespace FileSender.Core.Network
         internal byte PacketRead { get; set; }
 
         public CancellationTokenSource CTS { get; set; }
+        public SslStream SSLStream { get; set; }
         public PacketHandler PacketHandler { get; set; }
         public EventHandler OnDisconnected { get; set; }
         public bool IsServer { get; set; }

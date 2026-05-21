@@ -98,6 +98,7 @@
             sendReqBTN.TabIndex = 6;
             sendReqBTN.Text = "Send";
             sendReqBTN.UseVisualStyleBackColor = true;
+            sendReqBTN.Click += sendReqBTN_Click;
             // 
             // requestBodyTB
             // 

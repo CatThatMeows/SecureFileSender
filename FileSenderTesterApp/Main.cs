@@ -1,12 +1,7 @@
 using FileSender.Core.Client;
 using FileSender.Core.Network;
 using FileSender.Core.Packets;
-using Newtonsoft.Json;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-
 
 namespace FileSenderTesterApp
 {
@@ -14,13 +9,14 @@ namespace FileSenderTesterApp
     {
         private readonly object SyncObject = new object();
         private readonly PacketHandler packetHandler = new TesterClientPacketHandler();
-        private readonly Connection con = new FileSender.Core.Client.Connection();
+        private readonly TestConnection con = new TestConnection();
 
         public static Dictionary<string, string> PacketTemplates = new();
 
         public Main()
         {
             InitializeComponent();
+            sendReqBTN.Enabled = false;
             connectedLB.Text = "DISCONNECTED";
             connectedLB.ForeColor = Color.Red;
         }
@@ -53,6 +49,7 @@ namespace FileSenderTesterApp
 
         private void Connected()
         {
+            sendReqBTN.Enabled = true;
             connectedLB.Text = "CONNECTED";
             connectedLB.ForeColor = Color.Green;
         }
@@ -64,6 +61,7 @@ namespace FileSenderTesterApp
             if (((TesterClientPacketHandler)packetHandler).onMessageReceived != null)
                 ((TesterClientPacketHandler)packetHandler).onMessageReceived -= Intercept;
 
+            sendReqBTN.Enabled = false;
             connectedLB.Text = "DISCONNECTED";
             connectedLB.ForeColor = Color.Red;
         }
@@ -92,8 +90,13 @@ namespace FileSenderTesterApp
         }
         private void packetTypesCB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(!string.IsNullOrWhiteSpace(packetTypesCB.SelectedItem.ToString()))
+            if (!string.IsNullOrWhiteSpace(packetTypesCB.SelectedItem.ToString()))
                 requestBodyTB.Text = PacketTemplates[packetTypesCB.SelectedItem.ToString()];
+        }
+
+        private void sendReqBTN_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

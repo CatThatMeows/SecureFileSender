@@ -12,7 +12,7 @@ namespace FileSender.Core.Packets
   ""Files"": [
     {
       ""ID"": ""4a545506-8b03-4119-8bb1-a04bada0fee4"",
-      ""FileName"": ""VÉN HÜLYE BUZERÁNSOK - Lil Kubik a Creeper.mp3"",
+      ""FileName"": ""--- - Lil Kubik a Creeper.mp3"",
       ""IsPassworded"": true,
       ""FileSize"": 6639564
     },
