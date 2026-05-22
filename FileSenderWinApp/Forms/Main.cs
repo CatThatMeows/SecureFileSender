@@ -3,6 +3,7 @@ using FileSender.Core.Network;
 using FileSender.Core.Network.Client;
 using FileSender.Core.Network.Server;
 using FileSender.Core.UI;
+using FileSenderWinApp.Forms.Client;
 using FileSenderWinApp.Forms.Server;
 using System.Net;
 
@@ -29,11 +30,6 @@ namespace FileSenderWinApp.Forms
         private async void Main_Load(object sender, EventArgs e)
         {
             CoreSettings.CS.CoreInit();
-            
-            //DEBUG
-            Discover dc = new Discover();
-            List<IPAddress> ips = await dc.ConnectDummmy();
-            MessageBox.Show(ips.Count.ToString());
 
             FileData.InitLists();
             if (CoreSettings.CS.Port != -1)
@@ -43,6 +39,16 @@ namespace FileSenderWinApp.Forms
             if (FileData.ServerFiles.Count > 0)
             {
                 ((ServerFileList)FormHandler.ServerFileList).AddFromList();
+            }
+
+            ((ServerSettings)FormHandler.ServerSettings).networkDiscovery.Checked = CoreSettings.CS.IsDiscoveryEnabled;
+            if (CoreSettings.CS.IsDiscoveryEnabled)
+            {
+                Discover dc = new Discover();
+                List<IPAddress> ips = await dc.ConnectDummmy();
+
+                for(int i = 0; i <  ips.Count; i++)
+                    ((ClientServerList)FormHandler.ClientServerList).Connect(ips[i].ToString(), CoreSettings.CS.Port);
             }
         }
 

@@ -11,14 +11,15 @@ namespace FileSenderWinApp.Forms.Server
 
         private void PortTB_TextChanged(object sender, EventArgs e)
         {
-            if(int.TryParse(PortTB.Text, out int port)) { 
-                if(port < 1 || port > 65535)
+            if (int.TryParse(PortTB.Text, out int port))
+            {
+                if (port < 1 || port > 65535)
                 {
                     PortTB.Text = CoreSettings.CS.Port.ToString();
                     port = CoreSettings.CS.Port;
                 }
 
-                if(port != CoreSettings.CS.Port)
+                if (port != CoreSettings.CS.Port)
                     FileSender.Core.CoreSettings.CS.SetPort(port);
             }
             else
@@ -68,7 +69,7 @@ namespace FileSenderWinApp.Forms.Server
         private void CreateCertificateBTN_Click(object sender, EventArgs e)
         {
             PasswordInput PIF = new PasswordInput("You will need this password to import the certificate each time you start the server", true);
-            if(PIF.ShowDialog() == DialogResult.OK)
+            if (PIF.ShowDialog() == DialogResult.OK)
             {
                 if (PIF.PasswordInputFormTB.Text == PIF.PasswordConfirmInputFormTB.Text)
                 {
@@ -79,6 +80,11 @@ namespace FileSenderWinApp.Forms.Server
                     MessageBox.Show("The passwords don't match");
                 }
             }
+        }
+
+        private void networkDiscovery_CheckedChanged(object sender, EventArgs e)
+        {
+            CoreSettings.CS.SetDiscovery(networkDiscovery.Checked);
         }
     }
 }

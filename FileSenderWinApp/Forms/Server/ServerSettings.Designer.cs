@@ -34,6 +34,7 @@
             CertificateStatusLabel = new Label();
             CertificateImportBTN = new Button();
             CreateCertificateBTN = new Button();
+            networkDiscovery = new CheckBox();
             SuspendLayout();
             // 
             // PortLabel
@@ -98,11 +99,25 @@
             CreateCertificateBTN.UseVisualStyleBackColor = true;
             CreateCertificateBTN.Click += CreateCertificateBTN_Click;
             // 
+            // networkDiscovery
+            // 
+            networkDiscovery.AutoSize = true;
+            networkDiscovery.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            networkDiscovery.Location = new Point(246, 257);
+            networkDiscovery.Name = "networkDiscovery";
+            networkDiscovery.RightToLeft = RightToLeft.Yes;
+            networkDiscovery.Size = new Size(284, 27);
+            networkDiscovery.TabIndex = 6;
+            networkDiscovery.Text = "Discover servers on local network";
+            networkDiscovery.UseVisualStyleBackColor = true;
+            networkDiscovery.CheckedChanged += networkDiscovery_CheckedChanged;
+            // 
             // ServerSettings
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(833, 580);
+            Controls.Add(networkDiscovery);
             Controls.Add(CreateCertificateBTN);
             Controls.Add(CertificateImportBTN);
             Controls.Add(CertificateStatusLabel);
@@ -124,5 +139,6 @@
         private Label CertificateStatusLabel;
         private Button CertificateImportBTN;
         private Button CreateCertificateBTN;
+        public CheckBox networkDiscovery;
     }
 }

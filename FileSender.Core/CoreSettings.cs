@@ -10,6 +10,7 @@ namespace FileSender.Core
         public static CoreSettings CS { get { return _CS; } }
         [JsonIgnore]
         public X509Certificate2 ServerCertificate { get; private set; }
+        public bool IsDiscoveryEnabled { get; set; } = false;
         public string CertificatePath { get; set; } = "cert.p12";
         public int Port { get; set; }
 
@@ -57,6 +58,11 @@ namespace FileSender.Core
         public void SetPort(int port)
         {
             Port = port;
+            CoreSettingsExport();
+        }
+        public void SetDiscovery(bool input)
+        {
+            IsDiscoveryEnabled = input;
             CoreSettingsExport();
         }
         public void CoreSettingsExport()

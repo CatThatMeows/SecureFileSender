@@ -24,15 +24,21 @@ namespace FileSenderWinApp.Forms.Client
                     MessageBox.Show("Wrong input");
                     return;
                 }
-                Connection con = new FileSender.Core.Client.Connection();
-                bool connected = await con.Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]), packetHandler);
-                if (connected)
-                {
-                    con.OnDisconnected += OnDisconnected;
-                    AddServer(con);
-                    _ = con.ReceiveData();
-                }
+
+                _ = Connect(CDC.IPPortTB.Text.Split(':')[0], int.Parse(CDC.IPPortTB.Text.Split(':')[1]));
             }
+        }
+        public async Task<bool> Connect(string ip, int port)
+        {
+            Connection con = new FileSender.Core.Client.Connection();
+            bool connected = await con.Connect(ip, port, packetHandler);
+            if (connected)
+            {
+                con.OnDisconnected += OnDisconnected;
+                AddServer(con);
+                _ = con.ReceiveData();
+            }
+            return connected;
         }
         private async void AddServer(Connection conn)
         {
