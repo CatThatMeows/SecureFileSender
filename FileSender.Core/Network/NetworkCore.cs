@@ -180,6 +180,7 @@ namespace FileSender.Core.Network
                     ClientSocket.Close();
                     ClientSocket.Dispose();
                 }
+
             }
             catch { }
 

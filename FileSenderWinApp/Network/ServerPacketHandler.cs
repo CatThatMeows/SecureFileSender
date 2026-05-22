@@ -38,21 +38,35 @@ namespace FileSenderWinApp.Network
                 {
                     if (FileData.ServerFiles[i].ID == req.FileID)
                     {
-                        if (FileData.ServerFiles[i].IsPassworded)
+                        if (File.Exists(FileData.ServerFiles[i].FileLocation))
                         {
-                            if (FileData.ServerFiles[i].PasswordHash == req.ReqPasswordHash)
+                            FileInfo info = new FileInfo(FileData.ServerFiles[i].FileLocation);
+                            if (FileData.ServerFiles[i].FileSize != info.Length)
                             {
-                                _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
+                                FileData.ServerFiles[i].FileSize = info.Length;
+                                FileData.WriteToFile();
+                            }
+                            if (FileData.ServerFiles[i].IsPassworded)
+                            {
+                                if (FileData.ServerFiles[i].PasswordHash == req.ReqPasswordHash)
+                                {
+                                    _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
+                                }
+                                else
+                                {
+                                    //Disconnect
+                                    await con.Disconnect();
+                                    return;
+                                }
                             }
                             else
-                            {
-                                //Disconnect
-                                await con.Disconnect();
-                                return;
-                            }
+                                _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
                         }
                         else
-                            _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
+                        {
+                            await con.Disconnect();
+                            return;
+                        }
                     }
                 }
             }
