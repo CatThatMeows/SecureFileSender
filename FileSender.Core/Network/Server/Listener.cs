@@ -1,13 +1,5 @@
-﻿using FileSender.Core.Packets;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSender.Core.Network.Server
 {
@@ -55,9 +47,8 @@ namespace FileSender.Core.Network.Server
                     if(node != null)
                     {
                         ClientList.CL.AddClient(node);
-                    }
-
-                     _ = node.HandleClient();                    
+                        _ = node.HandleClient();
+                    }                    
                 }
                 catch (OperationCanceledException)
                 {

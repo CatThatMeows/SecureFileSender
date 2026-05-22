@@ -39,6 +39,7 @@
             inputLB = new Label();
             packetsToSendNSB = new NumericUpDown();
             label1 = new Label();
+            disconnectBTN = new Button();
             ((System.ComponentModel.ISupportInitialize)packetsToSendNSB).BeginInit();
             SuspendLayout();
             // 
@@ -62,7 +63,7 @@
             // connectedLB
             // 
             connectedLB.AutoSize = true;
-            connectedLB.Location = new Point(673, 68);
+            connectedLB.Location = new Point(704, 68);
             connectedLB.Name = "connectedLB";
             connectedLB.Size = new Size(0, 20);
             connectedLB.TabIndex = 2;
@@ -140,11 +141,22 @@
             label1.TabIndex = 10;
             label1.Text = "Number of packets to send:";
             // 
+            // disconnectBTN
+            // 
+            disconnectBTN.Location = new Point(604, 65);
+            disconnectBTN.Name = "disconnectBTN";
+            disconnectBTN.Size = new Size(94, 29);
+            disconnectBTN.TabIndex = 11;
+            disconnectBTN.Text = "Disconnect";
+            disconnectBTN.UseVisualStyleBackColor = true;
+            disconnectBTN.Click += disconnectBTN_Click;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1006, 721);
+            Controls.Add(disconnectBTN);
             Controls.Add(label1);
             Controls.Add(packetsToSendNSB);
             Controls.Add(inputLB);
@@ -179,5 +191,6 @@
         private Label inputLB;
         private NumericUpDown packetsToSendNSB;
         private Label label1;
+        private Button disconnectBTN;
     }
 }

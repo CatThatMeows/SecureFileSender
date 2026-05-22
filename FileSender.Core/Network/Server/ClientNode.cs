@@ -1,16 +1,8 @@
-﻿using FileSender.Core.Packets;
-using FileSender.Core.Tools;
-using FileSender.Core.UI;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using FileSender.Core.UI;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSender.Core.Network.Server
 {

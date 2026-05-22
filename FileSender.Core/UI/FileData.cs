@@ -32,30 +32,32 @@ namespace FileSender.Core.UI
             {
                 List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
                 if (loadedFile != null)
+                {
                     ServerFiles = loadedFile;
 
-                //Correct file sizes, check for deleted files
-                bool madeChange = false;
-                for(int i = 0; i < ServerFiles.Count; i++)
-                {
-                    if (File.Exists(ServerFiles[i].FileLocation))
+                    //Correct file sizes, check for deleted files
+                    bool madeChange = false;
+                    for (int i = 0; i < ServerFiles.Count; i++)
                     {
-                        FileInfo info = new FileInfo(ServerFiles[i].FileLocation);
-                        if (ServerFiles[i].FileSize != info.Length)
+                        if (File.Exists(ServerFiles[i].FileLocation))
                         {
-                            ServerFiles[i].FileSize = info.Length;
+                            FileInfo info = new FileInfo(ServerFiles[i].FileLocation);
+                            if (ServerFiles[i].FileSize != info.Length)
+                            {
+                                ServerFiles[i].FileSize = info.Length;
+                                madeChange = true;
+                            }
+                        }
+                        else
+                        {
+                            ServerFiles.Remove(ServerFiles[i]);
                             madeChange = true;
                         }
                     }
-                    else
-                    {
-                        ServerFiles.Remove(ServerFiles[i]);
-                        madeChange = true;
-                    }
-                }
 
-                if(madeChange)
-                    WriteToFile();
+                    if (madeChange)
+                        WriteToFile();
+                }
             }
             /*if (File.Exists("ClientFiles.json"))
             {
@@ -72,7 +74,7 @@ namespace FileSender.Core.UI
             PasswordHash = Convert.ToHexString(hashedPass);
         }
 
-        public Guid ID { get; set; }
+        public Guid ID { get; set; } //For identification purposes :w
         public string FileName { get; set; } = string.Empty; //Full name including extension
         public string FileLocation { get; set; } = string.Empty; //File full location
         public string PasswordHash { get; set; } = string.Empty;

@@ -40,7 +40,7 @@ namespace FileSenderTesterApp
             if (sender != null)
             {
                 string input = (string)sender;
-                if(lastResponse != input)
+                if (lastResponse != input)
                 {
                     lastResponse = input;
                     responseTB.Text = lastResponse;
@@ -56,6 +56,7 @@ namespace FileSenderTesterApp
             ((TesterClientPacketHandler)packetHandler).onMessageReceived += Intercept;
 
             sendReqBTN.Enabled = true;
+            disconnectBTN.Enabled = true;
             connectedLB.Text = "CONNECTED";
             connectedLB.ForeColor = Color.Green;
         }
@@ -67,6 +68,7 @@ namespace FileSenderTesterApp
             if (((TesterClientPacketHandler)packetHandler).onMessageReceived != null)
                 ((TesterClientPacketHandler)packetHandler).onMessageReceived -= Intercept;
 
+            disconnectBTN.Enabled = false;
             sendReqBTN.Enabled = false;
             connectedLB.Text = "DISCONNECTED";
             connectedLB.ForeColor = Color.Red;
@@ -113,6 +115,10 @@ namespace FileSenderTesterApp
                     tasks[i] = con.SendTestCMD(rqbody, pt);
                 }
             });
+        }
+        private async void disconnectBTN_Click(object sender, EventArgs e)
+        {
+            await con.Disconnect();
         }
     }
 }

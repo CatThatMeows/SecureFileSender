@@ -3,7 +3,6 @@ using FileSender.Core.Network.Server;
 using FileSender.Core.Packets;
 using FileSender.Core.UI;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Text;
 
 namespace FileSenderWinApp.Network
@@ -56,6 +55,11 @@ namespace FileSenderWinApp.Network
                             _ = ((ClientNode)con).SendFile(FileData.ServerFiles[i]);
                     }
                 }
+            }
+            else
+            {
+                await con.Disconnect();
+                return;
             }
         }
     }
