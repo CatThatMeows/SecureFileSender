@@ -53,17 +53,26 @@ namespace FileSender.Core.Network.Client
 
         private async Task<bool> TryConnect(string ip, int port)
         {
-            Connection con = new Connection();
-            Task result = con.Connect(ip, port, null);
+            Socket dummySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Task result = TryValid(dummySocket, ip, port);
             Task timeout = Task.Delay(800);
 
             if (await Task.WhenAny(result, timeout) == timeout)
             {
-                await con.Disconnect();
+                try
+                {
+                    await dummySocket.DisconnectAsync(false);
+                }catch { } //Doesnt matter
                 return false;
             }
 
             return true;
+        }
+        
+        private async Task<bool> TryValid(Socket dummySocket, string ip, int port)
+        {
+            await dummySocket.ConnectAsync(ip, port);
+            return dummySocket.Connected;
         }
     }
 }
