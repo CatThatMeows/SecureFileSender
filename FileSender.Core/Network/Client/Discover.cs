@@ -1,5 +1,4 @@
-﻿using FileSender.Core.Client;
-using System.Net;
+﻿using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
@@ -54,14 +53,17 @@ namespace FileSender.Core.Network.Client
         private async Task<bool> TryConnect(string ip, int port)
         {
             Socket dummySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Task result = TryValid(dummySocket, ip, port);
+            CancellationTokenSource CTS = new CancellationTokenSource();
+            Task result = TryValid(dummySocket, ip, port, CTS.Token);
             Task timeout = Task.Delay(800);
 
             if (await Task.WhenAny(result, timeout) == timeout)
             {
                 try
                 {
+                    await CTS.CancelAsync();
                     await dummySocket.DisconnectAsync(false);
+                    CTS.Dispose();
                 }catch { } //Doesnt matter
                 return false;
             }
@@ -69,9 +71,9 @@ namespace FileSender.Core.Network.Client
             return true;
         }
         
-        private async Task<bool> TryValid(Socket dummySocket, string ip, int port)
+        private async Task<bool> TryValid(Socket dummySocket, string ip, int port, CancellationToken CT)
         {
-            await dummySocket.ConnectAsync(ip, port);
+            await dummySocket.ConnectAsync(ip, port, CT);
             return dummySocket.Connected;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using FileSender.Core.Network;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -40,7 +39,10 @@ namespace FileSender.Core.Client
                 {
                     await SSLStream.AuthenticateAsClientAsync(ClientSocket.RemoteEndPoint.ToString().Split(':')[0], null, SslProtocols.Tls12, false);
                 }
-                catch (Exception ex) { Debug.WriteLine(ex); return false; }
+                catch (Exception ex) {
+                    await CTS.CancelAsync();
+                    return false;
+                }
                 return true;
             }
             else
