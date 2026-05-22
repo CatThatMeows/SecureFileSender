@@ -1,8 +1,10 @@
 ﻿using FileSender.Core;
 using FileSender.Core.Network;
+using FileSender.Core.Network.Client;
 using FileSender.Core.Network.Server;
 using FileSender.Core.UI;
 using FileSenderWinApp.Forms.Server;
+using System.Net;
 
 namespace FileSenderWinApp.Forms
 {
@@ -24,9 +26,15 @@ namespace FileSenderWinApp.Forms
             FormHandler.LoadForm(FormHandler.ServerSettings);
         }
 
-        private void Main_Load(object sender, EventArgs e)
+        private async void Main_Load(object sender, EventArgs e)
         {
             CoreSettings.CS.CoreInit();
+            
+            //DEBUG
+            Discover dc = new Discover();
+            List<IPAddress> ips = await dc.ConnectDummmy();
+            MessageBox.Show(ips.Count.ToString());
+
             FileData.InitLists();
             if (CoreSettings.CS.Port != -1)
             {
