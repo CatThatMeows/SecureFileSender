@@ -33,13 +33,36 @@ namespace FileSender.Core.UI
                 List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
                 if (loadedFile != null)
                     ServerFiles = loadedFile;
+
+                //Correct file sizes, check for deleted files
+                bool madeChange = false;
+                for(int i = 0; i < ServerFiles.Count; i++)
+                {
+                    if (File.Exists(ServerFiles[i].FileLocation))
+                    {
+                        FileInfo info = new FileInfo(ServerFiles[i].FileLocation);
+                        if (ServerFiles[i].FileSize != info.Length)
+                        {
+                            ServerFiles[i].FileSize = info.Length;
+                            madeChange = true;
+                        }
+                    }
+                    else
+                    {
+                        ServerFiles.Remove(ServerFiles[i]);
+                        madeChange = true;
+                    }
+                }
+
+                if(madeChange)
+                    WriteToFile();
             }
-            if (File.Exists("ClientFiles.json"))
+            /*if (File.Exists("ClientFiles.json"))
             {
                 List<FileData> loadedFile = JsonConvert.DeserializeObject<List<FileData>>(File.ReadAllText("ServerFiles.json"));
                 if (loadedFile != null)
                     ClientFiles = loadedFile;
-            }
+            }*/
         }
 
         public void SetPassword(string password)
