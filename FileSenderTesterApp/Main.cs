@@ -9,7 +9,8 @@ namespace FileSenderTesterApp
     {
         private readonly object SyncObject = new object();
         private readonly PacketHandler packetHandler = new TesterClientPacketHandler();
-        private readonly TestConnection con = new TestConnection();
+        private TestConnection con;
+        private string lastResponse = String.Empty;
 
         public static Dictionary<string, string> PacketTemplates = new();
 
@@ -23,32 +24,37 @@ namespace FileSenderTesterApp
 
         private async void connectBTN_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(PacketTemplates.Count().ToString());
+            con = new TestConnection();
             bool connected = await con.Connect(IPTB.Text.Split(':')[0], int.Parse(IPTB.Text.Split(':')[1]), packetHandler);
             if (connected)
             {
-                con.OnDisconnected += OnDisconnected;
-                ((TesterClientPacketHandler)packetHandler).onMessageReceived += Intercept;
-
-                _ = con.ReceiveData();
                 Connected();
+                _ = con.ReceiveData();
             }
             else
                 MessageBox.Show("Failed to connect to host.");
-
-            requestBodyTB.Text = AuthPacket.Template; //DEBUG
         }
 
         private void Intercept(object? sender, EventArgs e)
         {
             if (sender != null)
-                responseTB.Text = (string)sender;
+            {
+                string input = (string)sender;
+                if(lastResponse != input)
+                {
+                    lastResponse = input;
+                    responseTB.Text = lastResponse;
+                }
+            }
             else
-                responseTB.Text = "Empty response";
+                lastResponse = "Empty response";
         }
 
         private void Connected()
         {
+            con.OnDisconnected += OnDisconnected;
+            ((TesterClientPacketHandler)packetHandler).onMessageReceived += Intercept;
+
             sendReqBTN.Enabled = true;
             connectedLB.Text = "CONNECTED";
             connectedLB.ForeColor = Color.Green;
@@ -96,7 +102,17 @@ namespace FileSenderTesterApp
 
         private void sendReqBTN_Click(object sender, EventArgs e)
         {
-            
+            PacketType pt = (PacketType)Enum.Parse(typeof(PacketType), packetTypesCB.SelectedItem.ToString());
+            string rqbody = requestBodyTB.Text;
+            int packetValue = (int)packetsToSendNSB.Value;
+            Task.Run(() =>
+            {
+                Task[] tasks = new Task[packetValue];
+                for (int i = 0; i < packetValue; i++)
+                {
+                    tasks[i] = con.SendTestCMD(rqbody, pt);
+                }
+            });
         }
     }
 }

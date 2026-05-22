@@ -7,7 +7,7 @@ namespace FileSenderTesterApp
 {
     public partial class TestConnection : Connection
     {
-        public async void SendTestCMD(string input, PacketType _packetType)
+        public async Task SendTestCMD(string input, PacketType _packetType)
         {
             byte[] send = await GZip.CompressData(UTF8Encoding.UTF8.GetBytes(input), CTS.Token);
             byte[] packetType = new byte[1] { (byte)_packetType };

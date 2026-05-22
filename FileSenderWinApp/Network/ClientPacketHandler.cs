@@ -13,7 +13,7 @@ namespace FileSenderWinApp.Network
     {
         public async Task Handle(NetworkCore con, PacketType packetType, ArraySegment<byte> bytes)
         {
-            Debug.WriteLine(UTF8Encoding.UTF8.GetString(bytes)); //DEBUG
+            //Debug.WriteLine(UTF8Encoding.UTF8.GetString(bytes)); //DEBUG
             if (packetType == PacketType.FileListPacket)
             {
                 FileListPacket packet = JsonConvert.DeserializeObject<FileListPacket>(UTF8Encoding.UTF8.GetString(bytes));

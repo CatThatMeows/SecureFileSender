@@ -37,11 +37,14 @@
             sendReqBTN = new Button();
             requestBodyTB = new TextBox();
             inputLB = new Label();
+            packetsToSendNSB = new NumericUpDown();
+            label1 = new Label();
+            ((System.ComponentModel.ISupportInitialize)packetsToSendNSB).BeginInit();
             SuspendLayout();
             // 
             // connectBTN
             // 
-            connectBTN.Location = new Point(518, 63);
+            connectBTN.Location = new Point(504, 65);
             connectBTN.Name = "connectBTN";
             connectBTN.Size = new Size(94, 29);
             connectBTN.TabIndex = 0;
@@ -92,7 +95,7 @@
             // 
             // sendReqBTN
             // 
-            sendReqBTN.Location = new Point(518, 115);
+            sendReqBTN.Location = new Point(504, 116);
             sendReqBTN.Name = "sendReqBTN";
             sendReqBTN.Size = new Size(94, 29);
             sendReqBTN.TabIndex = 6;
@@ -118,11 +121,32 @@
             inputLB.TabIndex = 8;
             inputLB.Text = "Request body:";
             // 
+            // packetsToSendNSB
+            // 
+            packetsToSendNSB.Location = new Point(258, 381);
+            packetsToSendNSB.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
+            packetsToSendNSB.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            packetsToSendNSB.Name = "packetsToSendNSB";
+            packetsToSendNSB.Size = new Size(56, 27);
+            packetsToSendNSB.TabIndex = 9;
+            packetsToSendNSB.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(61, 383);
+            label1.Name = "label1";
+            label1.Size = new Size(191, 20);
+            label1.TabIndex = 10;
+            label1.Text = "Number of packets to send:";
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1006, 721);
+            Controls.Add(label1);
+            Controls.Add(packetsToSendNSB);
             Controls.Add(inputLB);
             Controls.Add(requestBodyTB);
             Controls.Add(sendReqBTN);
@@ -137,6 +161,7 @@
             Name = "Main";
             Text = "FileSender Tester App";
             Load += Main_Load;
+            ((System.ComponentModel.ISupportInitialize)packetsToSendNSB).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -152,5 +177,7 @@
         private Button sendReqBTN;
         private TextBox requestBodyTB;
         private Label inputLB;
+        private NumericUpDown packetsToSendNSB;
+        private Label label1;
     }
 }
