@@ -31,7 +31,7 @@ namespace FileSender.Core.Network.Client
                             ip[3] = i;
                             ips.Add(new IPAddress(ip));
                         }
-                        await Parallel.ForEachAsync(ips, new ParallelOptions { MaxDegreeOfParallelism = 50 }, 
+                        await Parallel.ForEachAsync(ips, new ParallelOptions { MaxDegreeOfParallelism = 3 }, 
                             async (ip, ct) => 
                             { 
                                 bool result = await TryConnect(ip.ToString(), CoreSettings.CS.Port);
@@ -47,6 +47,9 @@ namespace FileSender.Core.Network.Client
                 }
             }
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             return probablyOpen;
         }
 
@@ -55,7 +58,7 @@ namespace FileSender.Core.Network.Client
             Socket dummySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             CancellationTokenSource CTS = new CancellationTokenSource();
             Task result = TryValid(dummySocket, ip, port, CTS.Token);
-            Task timeout = Task.Delay(800);
+            Task timeout = Task.Delay(400);
 
             if (await Task.WhenAny(result, timeout) == timeout)
             {

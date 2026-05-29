@@ -1,4 +1,5 @@
 ﻿using FileSender.Core.Network;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -24,8 +25,8 @@ namespace FileSender.Core.Client
             {
                 await ClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Parse(ip), port), CTS.Token);
             }
-            catch (Exception ex) { 
-                                    await CTS.CancelAsync(); 
+            catch (Exception ex) {
+                await CTS.CancelAsync(); 
                                     return false; 
                                  }
             if (ClientSocket.Connected)

@@ -48,7 +48,7 @@ namespace FileSenderWinApp.Forms
                 List<IPAddress> ips = await dc.ConnectDummmy();
 
                 for(int i = 0; i <  ips.Count; i++)
-                    ((ClientServerList)FormHandler.ClientServerList).Connect(ips[i].ToString(), CoreSettings.CS.Port);
+                    await ((ClientServerList)FormHandler.ClientServerList).Connect(ips[i].ToString(), CoreSettings.CS.Port);
             }
         }
 
